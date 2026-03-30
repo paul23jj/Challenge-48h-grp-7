@@ -1233,3 +1233,7 @@ input[type="checkbox"] {
       0 0 80px rgba(0, 255, 0, 0.8);
   }
 }
+
+#volume {
+  font-size: 25px;
+}
