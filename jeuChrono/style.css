@@ -1,6 +1,3 @@
-/* ============================================
-   RESET & VARIABLES
-============================================ */
 *,
 *::before,
 *::after {
@@ -22,25 +19,18 @@
   --orange-glow: rgba(255, 100, 0, 0.7);
 }
 
-/* ============================================
-   BODY
-============================================ */
 body {
   background: var(--noir);
   font-family: "Orbitron", monospace;
-  overflow: hidden; /* Débloque le défilement vertical pour éviter de couper le haut */
+  overflow: hidden;
   cursor: crosshair;
   min-height: 100vh;
 }
 
-/* checkboxes cachées */
 input[type="checkbox"] {
   display: none;
 }
 
-/* ============================================
-   FOND USINE
-============================================ */
 .usineContainer {
   position: fixed;
   inset: 0;
@@ -118,9 +108,6 @@ input[type="checkbox"] {
   pointer-events: none;
 }
 
-/* ============================================
-   LAYOUT PRINCIPAL
-============================================ */
 .pageLayout {
   position: relative;
   z-index: 10;
@@ -130,9 +117,6 @@ input[type="checkbox"] {
   padding: 60px 0 40px 0; /* Ajoute l'espace vital en haut et en bas */
 }
 
-/* ============================================
-   BLOC LORE / RÈGLES (HUD SUR LE CÔTÉ)
-============================================ */
 .blocLore {
   position: fixed;
   left: 30px;
@@ -174,9 +158,6 @@ input[type="checkbox"] {
   margin-bottom: 0;
 }
 
-/* ============================================
-   SCAN LINES GLOBALES
-============================================ */
 .scanlines {
   position: fixed;
   inset: 0;
@@ -200,9 +181,6 @@ input[type="checkbox"] {
   }
 }
 
-/* ============================================
-   TICKER D'ALERTE (haut)
-============================================ */
 .ticker {
   position: fixed;
   top: 0;
@@ -236,9 +214,6 @@ input[type="checkbox"] {
   }
 }
 
-/* ============================================
-   LUMIÈRE D'ALARME
-============================================ */
 .lumiereAlarme {
   position: fixed;
   inset: 0;
@@ -280,9 +255,6 @@ input[type="checkbox"] {
   }
 }
 
-/* ============================================
-   EMPLOYÉ QUI FUIT
-============================================ */
 .employeFuyant {
   position: fixed;
   bottom: 10%;
@@ -301,9 +273,6 @@ input[type="checkbox"] {
   }
 }
 
-/* ============================================
-   PANNEAU DE CONTRÔLE
-============================================ */
 .panneauControle {
   position: relative;
   z-index: 10;
@@ -371,9 +340,6 @@ input[type="checkbox"] {
   margin-bottom: 20px;
 }
 
-/* ============================================
-   ÉCRAN DIGITAL
-============================================ */
 .ecranDigital {
   background: #020202;
   padding: 5% 4%;
@@ -573,9 +539,6 @@ input[type="checkbox"] {
   }
 }
 
-/* ============================================
-   ZONE DANGER + BOUTON
-============================================ */
 .zoneDanger {
   background: repeating-linear-gradient(
     45deg,
@@ -697,9 +660,6 @@ input[type="checkbox"] {
     inset 0 4px 14px rgba(0, 0, 0, 0.6);
 }
 
-/* ============================================
-   STATUT + CONSIGNE
-============================================ */
 .zoneInfos {
   display: flex;
   flex-direction: column;
@@ -769,9 +729,6 @@ input[type="checkbox"] {
   background: rgba(0, 0, 0, 0.5);
 }
 
-/* ============================================
-   FLAMMES — zones
-============================================ */
 .flammes-zone {
   position: fixed;
   bottom: 0;
@@ -792,7 +749,6 @@ input[type="checkbox"] {
   animation-direction: alternate;
 }
 
-/* --- ERREUR 1 --- */
 #err1:checked ~ .flammes-1 {
   display: block;
 }
@@ -851,7 +807,6 @@ input[type="checkbox"] {
   filter: blur(1px);
 }
 
-/* --- ERREUR 2 --- */
 #err2:checked ~ .flammes-2 {
   display: block;
 }
@@ -1174,9 +1129,6 @@ input[type="checkbox"] {
   }
 }
 
-/* ============================================
-   ANIMATIONS FEU
-============================================ */
 @keyframes feu1 {
   0% {
     transform: scaleX(1) scaleY(1) rotate(-2deg);
@@ -1203,12 +1155,9 @@ input[type="checkbox"] {
   }
 }
 
-/* ============================================
-   RESPONSIVE
-============================================ */
 @media (max-width: 850px) {
   .blocLore {
-    display: none; /* Cache le texte d'intro sur téléphone pour ne pas bloquer le bouton */
+    display: none;
   }
 }
 
@@ -1221,42 +1170,12 @@ input[type="checkbox"] {
     gap: 10px;
   }
 }
-/* ============================================
-   COMPRESSION POUR LES ÉCRANS PEU HAUTS (Laptops)
-============================================ */
-@media (max-height: 850px) {
-  .pageLayout {
-    padding: 40px 0 10px 0; /* Réduit l'espace vide autour du panneau */
-  }
-  .panneauControle {
-    padding: 15px; /* Réduit les bords gris internes */
-  }
-  .ecranDigital,
-  .essaisWrapper,
-  .zoneDanger {
-    margin-bottom: 12px; /* Remplace les marges en % par de petites marges fixes */
-  }
-  .boutonUrgence {
-    width: clamp(90px, 20vw, 120px);
-    height: clamp(90px, 20vw, 120px); /* Rétrécit le gros bouton rouge */
-  }
-  .chronometre {
-    font-size: clamp(40px, 10vw, 65px); /* Réduit un peu le texte du chrono */
-  }
-  .consigne {
-    font-size: clamp(14px, 4vw, 20px); /* Réduit le texte "NE PAS PRESSER" */
-  }
-}
-/* ============================================
-   BOUTON JEU SUIVANT - OVERLAY CENTRAL
-============================================ */
 .boutonSuivant {
-  /* La magie est ici : on sort le bouton du flux et on le fixe au centre de l'écran */
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 9999; /* S'assure qu'il passe au-dessus du panneau et du bouton rouge */
+  z-index: 9999;
 
   /* Police et Texte */
   font-family: "Orbitron", monospace;
@@ -1267,7 +1186,6 @@ input[type="checkbox"] {
   letter-spacing: 4px;
   text-align: center;
 
-  /* Apparence Neon */
   background-color: #00ff00;
   background-image: radial-gradient(circle at center, #ccff00 0%, #00ff00 100%);
   border: 3px solid #ffffff;
@@ -1275,7 +1193,6 @@ input[type="checkbox"] {
   padding: 20px 40px;
   cursor: pointer;
 
-  /* Glow ultra puissant */
   box-shadow:
     0 0 20px rgba(0, 255, 0, 0.8),
     0 0 60px rgba(0, 255, 0, 0.6),
@@ -1315,4 +1232,8 @@ input[type="checkbox"] {
       0 0 30px rgba(0, 255, 0, 1),
       0 0 80px rgba(0, 255, 0, 0.8);
   }
+}
+
+#volume {
+  font-size: 25px;
 }
