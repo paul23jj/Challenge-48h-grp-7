@@ -1,6 +1,9 @@
 const TEMPS_VISIBLE = 5;
 const CIBLE = 10;
-const TOLERANCE = 0.2;
+const TOLERANCE = 0.5;
+
+const slots = document.querySelectorAll('.slot');
+const MOT_CODE = 'MOT-SECRET';
 
 const bouton = document.querySelector('#grosBouton');
 const timerDisplay= document.querySelector('#affichageTimer');
@@ -78,6 +81,7 @@ function echec(temps) {
 
     essais++;
     nombreEssais.textContent = `${essais} / 3`;
+    slots[essais - 1].textContent = '❌';
 
     if (essais >= 3) {
         texteStatut.textContent = '💀 GAME OVER';
@@ -96,5 +100,6 @@ function reset () {
     timerDisplay.style.visibility = 'visible';
     texteStatut.textContent = 'NE PAS PRESSER';
     flammes.forEach(f => f.classList.remove('active'));
+    slots.forEach(s => s.textContent = '');
     bouton.disabled = false;
 }
