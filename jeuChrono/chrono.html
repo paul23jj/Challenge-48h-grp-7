@@ -3,18 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bouton d'Urgence</title>
+    <title>Séquence d'Urgence Centrale 404</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="panneauControle">
-      <div class="ecranDigital">
-        <p class="chronometre" id="affichageTimer">30:00</p>
+    <div class="usineContainer">
+      <div class="effetFeuCatastrophe" id="effetFeu"></div>
+
+      <div class="panneauControle">
+        <div class="ecranDigital">
+          <p class="chronometre" id="affichageTimer">30:00</p>
+        </div>
+
+        <div class="zoneDanger">
+          <button class="boutonUrgence" id="grosBouton"></button>
+        </div>
+
+        <div class="zoneInfos">
+          <p class="consigne" id="texteStatut">NE PAS PRESSER</p>
+
+          <div class="consigne compteurEssais">
+            TENTATIVES : <span id="nombreEssais">0</span>
+          </div>
+        </div>
       </div>
-      <div class="zoneDanger">
-        <button class="boutonUrgence" id="grosBouton"></button>
-      </div>
-      <p class="consigne" id="texteStatut">DANGER : NE PAS PRESSER</p>
     </div>
 
     <script src="script.js"></script>

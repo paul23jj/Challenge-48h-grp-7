@@ -3,35 +3,113 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: #1a1a1a;
+  background-color: #0d0d0d;
+  overflow: hidden; /* Empêche l'animation de feu de créer des barres de défilement */
+  font-family: sans-serif;
+}
+
+/* 1. FOND USINE "C'EST LA CATA" (Plaques de métal rouillées en CSS) */
+.usineContainer {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  font-family: sans-serif;
+  position: relative;
+  /* Texture métal sombre et taches de rouille simulées */
+  background-color: #1a1a1a;
+  background-image:
+    radial-gradient(
+      circle at 20% 30%,
+      rgba(139, 69, 19, 0.2) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      rgba(139, 69, 19, 0.2) 0%,
+      transparent 50%
+    ),
+    repeating-linear-gradient(
+      to right,
+      #2a2a2a 0px,
+      #2a2a2a 1px,
+      #1a1a1a 1px,
+      #1a1a1a 3px
+    );
 }
 
+/* 2. EFFET FEU DÉSACTIVÉ (Invisible par défaut) */
+.effetFeuCatastrophe {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150%; /* Plus grand que le panneau */
+  height: 150%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 100, 0, 1) 0%,
+    rgba(255, 0, 0, 0.6) 40%,
+    transparent 70%
+  );
+  z-index: 1; /* Derrière le panneau (z-index 2) */
+  filter: blur(20px);
+  opacity: 0; /* INVISIBLE PAR DÉFAUT */
+  transition: opacity 1s ease-in; /* Pour une apparition douce */
+}
+
+/* Classe à ajouter en JS pour activer le feu */
+.effetFeuCatastrophe.active {
+  opacity: 1;
+  animation: feuFlicker 0.1s infinite alternate; /* Scintillement chaotique */
+}
+
+@keyframes feuFlicker {
+  0% {
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.05) rotate(1deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1) rotate(-1deg);
+    opacity: 0.9;
+  }
+}
+
+/* 3. LE PANNEAU DE CONTRÔLE (Rendu plus "métal usé") */
 .panneauControle {
-  background-color: #2c2c2c;
-  padding: 5%;
-  border-radius: 15px;
-  border: 4px solid #111;
+  background-color: #333;
+  /* Texture métal gratté */
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.1),
+    rgba(0, 0, 0, 0.1) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  padding: clamp(20px, 5%, 40px);
+  border-radius: 10px;
+  border: 6px solid #111;
   box-shadow:
-    inset 0 0 20px #000,
-    0 20px 50px rgba(0, 0, 0, 0.8);
+    inset 0 0 30px #000,
+    0 20px 50px rgba(0, 0, 0, 0.9);
   text-align: center;
   width: 90%;
   max-width: 500px;
   box-sizing: border-box;
+  position: relative;
+  z-index: 2; /* Devant le feu */
 }
 
 .ecranDigital {
   background-color: #050505;
   padding: 4%;
   border: 5px solid #111;
-  border-radius: 8px;
+  border-radius: 5px;
   margin-bottom: 8%;
-  box-shadow: inset 0 0 15px rgba(255, 0, 0, 0.2);
+  box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.3);
 }
 
 .chronometre {
@@ -40,9 +118,7 @@ body {
   color: #ff0000;
   margin: 0;
   line-height: 1;
-  text-shadow:
-    0 0 10px #ff0000,
-    0 0 20px #cc0000;
+  text-shadow: 0 0 15px #ff0000;
   letter-spacing: 5px;
 }
 
@@ -50,14 +126,14 @@ body {
   background: repeating-linear-gradient(
     45deg,
     #000,
-    #000 20px,
-    #ffcc00 20px,
-    #ffcc00 40px
+    #000 15px,
+    #ffcc00 15px,
+    #ffcc00 30px
   );
   padding: 6%;
-  border-radius: 10px;
+  border-radius: 5px;
   display: inline-block;
-  border: 3px solid #000;
+  border: 4px solid #000;
 }
 
 .boutonUrgence {
@@ -67,32 +143,49 @@ body {
   border: none;
   background: radial-gradient(circle at 50% 30%, #ff4d4d, #b30000);
   box-shadow:
-    0 25px 0 #5a0000,
-    0 35px 20px rgba(0, 0, 0, 0.8);
+    0 20px 0 #5a0000,
+    0 30px 20px rgba(0, 0, 0, 0.8);
   cursor: pointer;
   outline: none;
   transition: all 0.1s ease;
 }
 
 .boutonUrgence:active {
-  transform: translateY(25px);
+  transform: translateY(20px);
   box-shadow:
     0 0 0 #5a0000,
     0 10px 10px rgba(0, 0, 0, 0.8);
 }
 
 .boutonUrgence:disabled {
-  background: radial-gradient(circle at 50% 30%, #888, #444);
+  background: radial-gradient(circle at 50% 30%, #555, #222);
   box-shadow:
-    0 25px 0 #222,
-    0 35px 20px rgba(0, 0, 0, 0.8);
+    0 20px 0 #111,
+    0 30px 20px rgba(0, 0, 0, 0.8);
   cursor: not-allowed;
+}
+
+/* Zone d'infos regroupée */
+.zoneInfos {
+  margin-top: 8%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Espace entre les lignes */
+  align-items: center;
 }
 
 .consigne {
   color: #ffcc00;
-  margin-top: 8%;
   font-weight: bold;
   font-size: clamp(14px, 4vw, 20px);
   letter-spacing: 2px;
+  margin: 0;
+}
+
+/* 4. LE COMPTEUR D'ESSAIS */
+.compteurEssais {
+  font-size: clamp(12px, 3.5vw, 18px);
+  color: #ffaa00; /* Légèrement plus orange */
+  text-transform: uppercase;
+  opacity: 0.8;
 }
