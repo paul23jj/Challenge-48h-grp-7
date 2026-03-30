@@ -113,8 +113,12 @@ input[type="checkbox"] {
   z-index: 10;
   height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  padding: 60px 0 40px 0; /* Ajoute l'espace vital en haut et en bas */
+  align-items: center;
+  box-sizing: border-box;
+  padding: 20px 0;
+  overflow: hidden;
 }
 
 .blocLore {
