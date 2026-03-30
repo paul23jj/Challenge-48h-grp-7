@@ -6,7 +6,7 @@ const bouton = document.querySelector('#grosBouton');
 const timerDisplay= document.querySelector('#affichageTimer');
 const texteStatut= document.querySelector('#texteStatut');
 const nombreEssais= document.querySelector('#nombreEssais');
-const effetFeu= document.querySelector('#effetFeu');
+const flammes= document.querySelectorAll('.flammes-zone');
 
 let timerId= null;
 let startTime= null;
@@ -55,9 +55,6 @@ function stopChrono() {
     const elapsed = (Date.now() - startTime) / 1000;
     const ecart   = Math.abs(elapsed - CIBLE);
 
-    essais++;
-    nombreEssais.textContent = essais;
-
     timerDisplay.textContent          = elapsed.toFixed(2);
     timerDisplay.style.visibility     = 'visible';
 
@@ -74,10 +71,19 @@ function victoire (temps)  {
     setTimeout(reset, 3000);
 }
 
-function echec (temps) {
+function echec(temps) {
     texteStatut.textContent = `${temps.toFixed(2)}s — RATÉ !`;
-    effetFeu.classList.add('active');
+    flammes.forEach(f => f.classList.add('active'));
     bouton.disabled = true;
+
+    essais++;
+    nombreEssais.textContent = `${essais} / 3`;
+
+    if (essais >= 3) {
+        texteStatut.textContent = '💀 GAME OVER';
+        return;
+    }
+
     setTimeout(reset, 3000);
 }
 
@@ -89,6 +95,6 @@ function reset () {
     timerDisplay.textContent = '0.00';
     timerDisplay.style.visibility = 'visible';
     texteStatut.textContent = 'NE PAS PRESSER';
-    effetFeu.classList.remove('active');
+    flammes.forEach(f => f.classList.remove('active'));
     bouton.disabled = false;
 }
