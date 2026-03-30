@@ -3,15 +3,15 @@ const CIBLE = 10;
 const TOLERANCE = 0.5;
 
 const slots = document.querySelectorAll('.slot');
-const MOT_CODE = 'MOT-SECRET';
+// Constantes à modifier pour sacha
+const MOT_CODE = '';
+const cheminNiveauSuivant = ''
 
 const bouton = document.querySelector('#grosBouton');
 const timerDisplay= document.querySelector('#affichageTimer');
 const texteStatut= document.querySelector('#texteStatut');
 const nombreEssais= document.querySelector('#nombreEssais');
 
-// --- CHARGEMENT DES SONS ---
-// Remplace les textes entre guillemets par les vrais liens (URL locale ou web) de tes fichiers audio (.mp3 ou .wav)
 const sonVictoire = new Audio('sons/SonReussite.mp3'); 
 const sonEchec1   = new Audio('sons/SonEchec1.mp3'); 
 const sonEchec2   = new Audio('sons/SonEchec2.mp3'); 
@@ -76,11 +76,10 @@ function stopChrono() {
 }
 
 function victoire(temps)  {
-    sonVictoire.play(); // Déclenche le son de victoire
+    sonVictoire.play();
     texteStatut.textContent = `${temps.toFixed(2)}s — CODE : ${MOT_CODE} !`;
     bouton.disabled = true;
     
-    // On appelle la fonction pour créer le bouton de suite au lieu de relancer le jeu
     afficherBoutonSuivant();
 }
 
@@ -89,16 +88,14 @@ function echec(temps) {
     essais++;
     nombreEssais.textContent = `${essais} / 3`;
     
-    // Coche la case d'erreur pour déclencher les flammes CSS
     document.getElementById('err' + essais).checked = true;
 
-    // --- CORRECTION : On utilise les bons sons selon l'essai ---
     if (essais === 1) {
         sonEchec1.play();
     } else if (essais === 2) {
         sonEchec2.play();
     } else if (essais >= 3) {
-        sonEchec3.play(); // Déclenche le son de Game Over (le pompe)
+        sonEchec3.play();
         
         texteStatut.textContent = '💀 DESTRUCTION IMMINENTE - GAME OVER';
         afficherBoutonSuivant(); 
@@ -107,7 +104,6 @@ function echec(temps) {
 
     texteStatut.textContent = `${temps.toFixed(2)}s — RATÉ !`;
     
-    // On redonne une chance après 1.5 secondes
     setTimeout(reset, 1500);
 }
 
@@ -120,22 +116,15 @@ function reset() {
     timerDisplay.style.visibility = 'visible';
     texteStatut.textContent = 'NE PAS PRESSER';
     
-    // CORRECTION : Il faut décocher manuellement les cases pour enlever les flammes si le joueur n'a pas encore perdu !
-    // Si on est à l'essai 1 ou 2, on ne veut pas enlever la flamme de l'essai précédent. 
-    // La logique CSS gère déjà l'accumulation, on n'a rien à faire de plus ici.
-
     bouton.disabled = false;
 }
 
-// Fonction pour fabriquer et afficher le bouton "Jeu Suivant"
-// Fonction pour fabriquer et afficher le bouton "Jeu Suivant"
 function afficherBoutonSuivant() {
     if (document.getElementById('btnSuivant')) return;
 
     const btn = document.createElement('button');
     btn.id = 'btnSuivant';
     
-    // CORRECTION : Change le texte selon si on a gagné ou perdu
     if (essais >= 3) {
         btn.textContent = 'RECOMMENCER ➔';
     } else {
@@ -144,8 +133,9 @@ function afficherBoutonSuivant() {
     
     btn.className = 'boutonSuivant'; 
     
-    btn.onclick = () => {
-        window.location.reload(); 
+    // LIEN A MODIFIER POUR PASSER AU NIVEAU D'APRES
+   btn.onclick = () => {
+        window.location.href = cheminNiveauSuivant; 
     };
 
     document.querySelector('.zoneInfos').appendChild(btn);
