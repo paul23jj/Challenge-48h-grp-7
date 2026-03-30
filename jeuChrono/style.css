@@ -1,98 +1,1174 @@
-@import url("https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap");
-
-body {
+/* ============================================
+   RESET & VARIABLES
+============================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  background-color: #1a1a1a;
+}
+
+:root {
+  --rouge: #ff0000;
+  --rouge-sombre: #8b0000;
+  --rouge-glow: rgba(255, 0, 0, 0.6);
+  --jaune: #ffcc00;
+  --jaune-glow: rgba(255, 204, 0, 0.5);
+  --noir: #050505;
+  --gris: #1a1a1a;
+  --vert: #00ff88;
+  --orange: #ff6600;
+  --orange-glow: rgba(255, 100, 0, 0.7);
+}
+
+/* ============================================
+   BODY
+============================================ */
+body {
+  background: var(--noir);
+  font-family: "Orbitron", monospace;
+  overflow: hidden;
+  cursor: crosshair;
+  min-height: 100vh;
+}
+
+/* checkboxes cachées */
+input[type="checkbox"] {
+  display: none;
+}
+
+/* ============================================
+   FOND USINE
+============================================ */
+.usineContainer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-color: #0a0805;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 58px,
+      rgba(20, 15, 5, 0.9) 58px,
+      rgba(20, 15, 5, 0.9) 62px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 78px,
+      rgba(20, 15, 5, 0.8) 78px,
+      rgba(20, 15, 5, 0.8) 82px
+    ),
+    linear-gradient(
+      to bottom,
+      #1a0f00 0%,
+      #0d0800 18%,
+      #060402 40%,
+      #030201 100%
+    );
+}
+
+.usineContainer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(
+      ellipse 30% 20% at 15% 30%,
+      rgba(80, 40, 0, 0.25) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 20% 15% at 80% 15%,
+      rgba(60, 30, 0, 0.2) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 25% 18% at 55% 80%,
+      rgba(70, 35, 0, 0.18) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 40% 60% at 90% 50%,
+      rgba(30, 15, 0, 0.3) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      ellipse 40% 60% at 10% 60%,
+      rgba(30, 15, 0, 0.25) 0%,
+      transparent 100%
+    );
+  z-index: 0;
+  pointer-events: none;
+}
+
+.usineContainer::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 90% 80% at 50% 50%,
+    transparent 40%,
+    rgba(0, 0, 0, 0.85) 100%
+  );
+  z-index: 100;
+  pointer-events: none;
+}
+
+/* ============================================
+   LAYOUT PRINCIPAL — centrage du panneau
+============================================ */
+.pageLayout {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  font-family: sans-serif;
 }
 
-.panneauControle {
-  background-color: #2c2c2c;
-  padding: 5%;
-  border-radius: 15px;
-  border: 4px solid #111;
+/* ============================================
+   SCAN LINES GLOBALES
+============================================ */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 3px,
+    rgba(0, 0, 0, 0.1) 3px,
+    rgba(0, 0, 0, 0.1) 4px
+  );
+  animation: scanRoll 10s linear infinite;
+}
+@keyframes scanRoll {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 400px;
+  }
+}
+
+/* ============================================
+   TICKER D'ALERTE (haut)
+============================================ */
+.ticker {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 98;
+  overflow: hidden;
+  height: 32px;
+  background: var(--rouge);
   box-shadow:
-    inset 0 0 20px #000,
-    0 20px 50px rgba(0, 0, 0, 0.8);
-  text-align: center;
+    0 0 30px rgba(255, 0, 0, 0.8),
+    0 4px 40px rgba(255, 0, 0, 0.4);
+}
+.tickerInner {
+  display: inline-block;
+  white-space: nowrap;
+  animation: tickerScroll 14s linear infinite;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 17px;
+  letter-spacing: 5px;
+  color: #000;
+  line-height: 32px;
+  padding-left: 100%;
+}
+@keyframes tickerScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* ============================================
+   LUMIÈRE D'ALARME
+============================================ */
+.lumiereAlarme {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 80% 50% at 50% -5%,
+      rgba(255, 0, 0, 0.5),
+      transparent 70%
+    ),
+    radial-gradient(circle 200px at 0% 0%, rgba(255, 0, 0, 0.35), transparent),
+    radial-gradient(circle 200px at 100% 0%, rgba(255, 0, 0, 0.35), transparent);
+  animation: alerte 0.85s ease-in-out infinite alternate;
+}
+.lumiereAlarme::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle 180px at 0% 100%,
+      rgba(255, 60, 0, 0.18),
+      transparent
+    ),
+    radial-gradient(
+      circle 180px at 100% 100%,
+      rgba(255, 60, 0, 0.18),
+      transparent
+    );
+  animation: alerte 0.85s ease-in-out infinite alternate-reverse;
+}
+@keyframes alerte {
+  0% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* ============================================
+   EMPLOYÉ QUI FUIT
+============================================ */
+.employeFuyant {
+  position: fixed;
+  bottom: 10%;
+  left: 0;
+  font-size: 70px;
+  z-index: 4;
+  animation: course 4s linear infinite;
+  filter: drop-shadow(2px 0 0 rgba(255, 100, 0, 0.6));
+}
+@keyframes course {
+  0% {
+    transform: translateX(-15vw);
+  }
+  100% {
+    transform: translateX(120vw);
+  }
+}
+
+/* ============================================
+   PANNEAU DE CONTRÔLE
+============================================ */
+.panneauControle {
+  position: relative;
+  z-index: 10;
   width: 90%;
   max-width: 500px;
-  box-sizing: border-box;
+  background: var(--gris);
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.012) 0px,
+      rgba(255, 255, 255, 0.012) 1px,
+      transparent 1px,
+      transparent 5px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.25) 0px,
+      rgba(0, 0, 0, 0.25) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+  padding: clamp(20px, 5%, 40px);
+  border-radius: 8px;
+  border-top: 3px solid #444;
+  border-left: 3px solid #3a3a3a;
+  border-right: 3px solid #111;
+  border-bottom: 3px solid #0a0a0a;
+  box-shadow:
+    0 40px 80px rgba(0, 0, 0, 0.97),
+    0 0 40px rgba(255, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.6),
+    inset 4px 0 20px rgba(0, 0, 0, 0.4),
+    inset -4px 0 20px rgba(0, 0, 0, 0.4);
+  animation: panneauGlow 1.8s ease-in-out infinite alternate;
+}
+@keyframes panneauGlow {
+  0% {
+    box-shadow:
+      0 40px 80px rgba(0, 0, 0, 0.97),
+      0 0 35px rgba(255, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      inset 4px 0 20px rgba(0, 0, 0, 0.4),
+      inset -4px 0 20px rgba(0, 0, 0, 0.4);
+  }
+  100% {
+    box-shadow:
+      0 40px 80px rgba(0, 0, 0, 0.97),
+      0 0 65px rgba(255, 0, 0, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      inset 4px 0 20px rgba(0, 0, 0, 0.4),
+      inset -4px 0 20px rgba(0, 0, 0, 0.4);
+  }
 }
 
+.panneauLabel {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 10px;
+  letter-spacing: 6px;
+  color: #444;
+  text-align: center;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #222;
+  margin-bottom: 20px;
+}
+
+/* ============================================
+   ÉCRAN DIGITAL
+============================================ */
 .ecranDigital {
-  background-color: #050505;
-  padding: 4%;
-  border: 5px solid #111;
-  border-radius: 8px;
-  margin-bottom: 8%;
-  box-shadow: inset 0 0 15px rgba(255, 0, 0, 0.2);
+  background: #020202;
+  padding: 5% 4%;
+  border: 2px solid #0a0a0a;
+  border-radius: 4px;
+  margin-bottom: 6%;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    inset 0 0 40px rgba(255, 0, 0, 0.2),
+    inset 0 0 8px rgba(255, 0, 0, 0.4),
+    0 2px 0 #111;
+}
+.ecranDigital::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 35%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.025),
+    transparent
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+.ecranDigital::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 3px,
+    rgba(0, 0, 0, 0.1) 3px,
+    rgba(0, 0, 0, 0.1) 4px
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+.ecranLabel {
+  font-size: clamp(7px, 1.5vw, 9px);
+  color: #ff3333;
+  letter-spacing: 5px;
+  opacity: 0.6;
+  display: block;
+  margin-bottom: 6px;
+  position: relative;
+  z-index: 4;
 }
 
 .chronometre {
   font-family: "Share Tech Mono", monospace;
-  font-size: clamp(40px, 12vw, 80px);
-  color: #ff0000;
-  margin: 0;
+  font-size: clamp(50px, 13vw, 88px);
+  color: var(--rouge);
   line-height: 1;
+  letter-spacing: 6px;
+  position: relative;
+  z-index: 4;
   text-shadow:
-    0 0 10px #ff0000,
-    0 0 20px #cc0000;
-  letter-spacing: 5px;
+    0 0 4px #fff,
+    0 0 12px var(--rouge),
+    0 0 28px var(--rouge),
+    0 0 55px var(--rouge-glow),
+    0 0 90px rgba(255, 0, 0, 0.25);
+  animation: chroCligno 1.1s ease-in-out infinite alternate;
+}
+@keyframes chroCligno {
+  0%,
+  80% {
+    opacity: 1;
+    text-shadow:
+      0 0 4px #fff,
+      0 0 12px var(--rouge),
+      0 0 28px var(--rouge),
+      0 0 55px var(--rouge-glow);
+  }
+  88% {
+    opacity: 0.35;
+    text-shadow: none;
+  }
+  100% {
+    opacity: 0.9;
+    text-shadow:
+      0 0 4px #fff,
+      0 0 22px var(--rouge),
+      0 0 50px var(--rouge);
+  }
 }
 
+/* ============================================
+   COMPTEUR D'ESSAIS — 3 slots (checkboxes)
+============================================ */
+.essaisWrapper {
+  margin-bottom: 6%;
+  background: #0d0d0d;
+  border: 1px solid #1e1e1e;
+  border-radius: 4px;
+  padding: 12px 16px;
+  box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.8);
+}
+.essaisLabel {
+  font-size: 8px;
+  letter-spacing: 5px;
+  color: #555;
+  margin-bottom: 10px;
+  display: block;
+  font-family: "Bebas Neue", sans-serif;
+}
+.essaisSlots {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+}
+
+.slot {
+  width: clamp(44px, 10vw, 58px);
+  height: clamp(44px, 10vw, 58px);
+  border: 2px solid #2a2a2a;
+  border-radius: 4px;
+  background: #0a0a0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.2s;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.9);
+}
+.slot::after {
+  content: "–";
+  font-family: "Share Tech Mono", monospace;
+  font-size: 28px;
+  color: #333;
+  transition: all 0.15s;
+}
+.slot:hover {
+  border-color: #444;
+}
+
+#err1:checked ~ .pageLayout .slot-1::after,
+#err2:checked ~ .pageLayout .slot-2::after,
+#err3:checked ~ .pageLayout .slot-3::after {
+  content: "✕";
+  color: var(--rouge);
+  font-size: clamp(26px, 6vw, 38px);
+  text-shadow:
+    0 0 6px #fff,
+    0 0 14px var(--rouge),
+    0 0 30px var(--rouge),
+    0 0 60px var(--rouge-glow);
+  animation: xPop 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+@keyframes xPop {
+  0% {
+    transform: scale(0) rotate(-20deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.3) rotate(5deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+#err1:checked ~ .pageLayout .slot-1,
+#err2:checked ~ .pageLayout .slot-2,
+#err3:checked ~ .pageLayout .slot-3 {
+  border-color: var(--rouge);
+  box-shadow:
+    inset 0 0 10px rgba(0, 0, 0, 0.9),
+    0 0 12px rgba(255, 0, 0, 0.5),
+    0 0 25px rgba(255, 0, 0, 0.2);
+  animation: slotShake 0.4s ease both;
+}
+@keyframes slotShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px) rotate(-2deg);
+  }
+  40% {
+    transform: translateX(6px) rotate(2deg);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+/* ============================================
+   ZONE DANGER + BOUTON
+============================================ */
 .zoneDanger {
   background: repeating-linear-gradient(
     45deg,
-    #000,
-    #000 20px,
-    #ffcc00 20px,
-    #ffcc00 40px
+    #0d0d0d,
+    #0d0d0d 13px,
+    #1a1200 13px,
+    #1a1200 14px,
+    #ffcc00 14px,
+    #ffcc00 27px,
+    #1a1200 27px,
+    #1a1200 28px
   );
-  padding: 6%;
-  border-radius: 10px;
-  display: inline-block;
-  border: 3px solid #000;
+  padding: clamp(16px, 5%, 28px);
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  border: 4px solid #000;
+  box-shadow:
+    0 0 0 2px #2a2a2a,
+    0 0 25px rgba(255, 204, 0, 0.12),
+    inset 0 0 20px rgba(0, 0, 0, 0.7);
+  margin-bottom: 6%;
+  position: relative;
 }
 
 .boutonUrgence {
-  width: clamp(120px, 35vw, 200px);
-  height: clamp(120px, 35vw, 200px);
+  width: clamp(110px, 30vw, 175px);
+  height: clamp(110px, 30vw, 175px);
   border-radius: 50%;
   border: none;
-  background: radial-gradient(circle at 50% 30%, #ff4d4d, #b30000);
-  box-shadow:
-    0 25px 0 #5a0000,
-    0 35px 20px rgba(0, 0, 0, 0.8);
   cursor: pointer;
   outline: none;
-  transition: all 0.1s ease;
+  position: relative;
+  transition:
+    transform 0.08s ease,
+    box-shadow 0.08s ease;
+  background: radial-gradient(
+    circle at 38% 28%,
+    #ff7070 0%,
+    #dd0000 35%,
+    #880000 70%,
+    #3a0000 100%
+  );
+  box-shadow:
+    0 16px 0 #3a0000,
+    0 20px 0 #220000,
+    0 26px 22px rgba(0, 0, 0, 0.95),
+    0 0 35px rgba(255, 0, 0, 0.45),
+    0 0 70px rgba(255, 0, 0, 0.2),
+    inset 0 2px 4px rgba(255, 150, 150, 0.3),
+    inset 0 -4px 10px rgba(0, 0, 0, 0.5);
+  animation: boutonRespire 1.5s ease-in-out infinite alternate;
 }
-
+.boutonUrgence::before {
+  content: "";
+  position: absolute;
+  top: 13%;
+  left: 18%;
+  width: 48%;
+  height: 28%;
+  background: radial-gradient(
+    ellipse,
+    rgba(255, 255, 255, 0.28) 0%,
+    transparent 100%
+  );
+  border-radius: 50%;
+  pointer-events: none;
+}
+.boutonUrgence::after {
+  content: "⚡";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(28px, 8vw, 50px);
+  filter: drop-shadow(0 0 8px rgba(255, 200, 0, 0.9));
+  pointer-events: none;
+}
+@keyframes boutonRespire {
+  0% {
+    box-shadow:
+      0 16px 0 #3a0000,
+      0 20px 0 #220000,
+      0 26px 22px rgba(0, 0, 0, 0.95),
+      0 0 30px rgba(255, 0, 0, 0.4),
+      0 0 60px rgba(255, 0, 0, 0.15),
+      inset 0 2px 4px rgba(255, 150, 150, 0.3),
+      inset 0 -4px 10px rgba(0, 0, 0, 0.5);
+  }
+  100% {
+    box-shadow:
+      0 16px 0 #3a0000,
+      0 20px 0 #220000,
+      0 26px 22px rgba(0, 0, 0, 0.95),
+      0 0 60px rgba(255, 0, 0, 0.7),
+      0 0 110px rgba(255, 0, 0, 0.4),
+      inset 0 2px 4px rgba(255, 150, 150, 0.3),
+      inset 0 -4px 10px rgba(0, 0, 0, 0.5);
+  }
+}
+.boutonUrgence:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow:
+    0 19px 0 #3a0000,
+    0 23px 0 #220000,
+    0 30px 28px rgba(0, 0, 0, 0.95),
+    0 0 80px rgba(255, 0, 0, 0.8),
+    0 0 130px rgba(255, 0, 0, 0.5),
+    inset 0 2px 4px rgba(255, 150, 150, 0.4),
+    inset 0 -4px 10px rgba(0, 0, 0, 0.5);
+}
 .boutonUrgence:active {
-  transform: translateY(25px);
+  transform: translateY(16px) scale(0.97);
   box-shadow:
-    0 0 0 #5a0000,
-    0 10px 10px rgba(0, 0, 0, 0.8);
+    0 0 0 #3a0000,
+    0 2px 0 #220000,
+    0 5px 10px rgba(0, 0, 0, 0.95),
+    0 0 40px rgba(255, 0, 0, 0.5),
+    inset 0 4px 14px rgba(0, 0, 0, 0.6);
 }
 
-.boutonUrgence:disabled {
-  background: radial-gradient(circle at 50% 30%, #888, #444);
-  box-shadow:
-    0 25px 0 #222,
-    0 35px 20px rgba(0, 0, 0, 0.8);
-  cursor: not-allowed;
+/* ============================================
+   STATUT + CONSIGNE
+============================================ */
+.zoneInfos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  border-top: 1px solid #1e1e1e;
+  padding-top: 5%;
+  position: relative;
+}
+.zoneInfos::before {
+  content: "● ● ●";
+  position: absolute;
+  top: -1px;
+  background: var(--gris);
+  padding: 0 10px;
+  font-size: 6px;
+  letter-spacing: 8px;
+  color: var(--rouge);
+  text-shadow: 0 0 8px var(--rouge);
+  animation: ledCligno 0.7s step-end infinite;
+}
+@keyframes ledCligno {
+  0%,
+  49% {
+    color: var(--rouge);
+    text-shadow: 0 0 8px var(--rouge);
+  }
+  50%,
+  100% {
+    color: #330000;
+    text-shadow: none;
+  }
 }
 
 .consigne {
-  color: #ffcc00;
-  margin-top: 8%;
-  font-weight: bold;
-  font-size: clamp(14px, 4vw, 20px);
-  letter-spacing: 2px;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(18px, 5vw, 26px);
+  letter-spacing: 4px;
+  color: var(--jaune);
+  text-shadow:
+    0 0 10px var(--jaune-glow),
+    0 0 25px rgba(255, 204, 0, 0.3);
+  animation: consignePulse 2.2s ease-in-out infinite alternate;
+}
+@keyframes consignePulse {
+  0% {
+    text-shadow:
+      0 0 8px var(--jaune-glow),
+      0 0 20px rgba(255, 204, 0, 0.3);
+  }
+  100% {
+    text-shadow:
+      0 0 18px var(--jaune),
+      0 0 45px var(--jaune-glow),
+      0 0 80px rgba(255, 204, 0, 0.25);
+  }
+}
+
+.compteurEssais {
+  font-family: "Share Tech Mono", monospace;
+  font-size: clamp(9px, 2.5vw, 12px);
+  color: #555;
+  letter-spacing: 3px;
+  border: 1px solid #1e1e1e;
+  padding: 5px 14px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* ============================================
+   FLAMMES — zones
+============================================ */
+.flammes-zone {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 0;
+  z-index: 3;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.f {
+  position: absolute;
+  bottom: 0;
+  border-radius: 50% 50% 20% 20% / 55% 55% 45% 45%;
+  transform-origin: bottom center;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+/* --- ERREUR 1 --- */
+#err1:checked ~ .flammes-1 {
+  display: block;
+}
+.flammes-1 {
+  display: none;
+}
+
+.flammes-1 .f:nth-child(1) {
+  left: 2%;
+  width: 55px;
+  height: 90px;
+  background: linear-gradient(to top, #ff6600, #ff2200, #ff000080, transparent);
+  animation: feu1 1.1s infinite alternate ease-in-out;
+  animation-delay: 0s;
+  opacity: 0.95;
+  filter: blur(1.5px);
+}
+.flammes-1 .f:nth-child(2) {
+  left: 5%;
+  width: 35px;
+  height: 60px;
+  background: linear-gradient(to top, #ff9900, #ff5500, transparent);
+  animation: feu2 0.8s infinite alternate;
+  animation-delay: 0.15s;
+  opacity: 0.8;
+  filter: blur(1px);
+}
+.flammes-1 .f:nth-child(3) {
+  left: 8%;
+  width: 70px;
+  height: 110px;
+  background: linear-gradient(to top, #ff4400, #ff1100, #cc000060, transparent);
+  animation: feu1 1.3s infinite alternate;
+  animation-delay: 0.3s;
+  opacity: 0.9;
+  filter: blur(2px);
+}
+.flammes-1 .f:nth-child(4) {
+  right: 3%;
+  width: 60px;
+  height: 95px;
+  background: linear-gradient(to top, #ff6600, #ff2200, transparent);
+  animation: feu2 1s infinite alternate;
+  animation-delay: 0.1s;
+  opacity: 0.9;
+  filter: blur(1.5px);
+}
+.flammes-1 .f:nth-child(5) {
+  right: 7%;
+  width: 40px;
+  height: 65px;
+  background: linear-gradient(to top, #ff9900, #ff4400, transparent);
+  animation: feu1 0.9s infinite alternate;
+  animation-delay: 0.25s;
+  opacity: 0.75;
+  filter: blur(1px);
+}
+
+/* --- ERREUR 2 --- */
+#err2:checked ~ .flammes-2 {
+  display: block;
+}
+.flammes-2 {
+  display: none;
+}
+
+.flammes-2 .f:nth-child(1) {
+  left: 2%;
+  width: 60px;
+  height: 100px;
+  background: linear-gradient(to top, #ff6600, #ff2200, transparent);
+  animation: feu1 1s infinite alternate;
+  opacity: 0.95;
+  filter: blur(1.5px);
+}
+.flammes-2 .f:nth-child(2) {
+  left: 6%;
+  width: 40px;
+  height: 70px;
+  background: linear-gradient(to top, #ff9900, #ff5500, transparent);
+  animation: feu2 0.75s infinite alternate;
+  animation-delay: 0.2s;
+  opacity: 0.8;
+  filter: blur(1px);
+}
+.flammes-2 .f:nth-child(3) {
+  left: 11%;
+  width: 75px;
+  height: 120px;
+  background: linear-gradient(to top, #ff4400, #ff1100, transparent);
+  animation: feu1 1.2s infinite alternate;
+  animation-delay: 0.35s;
+  opacity: 0.9;
+  filter: blur(2px);
+}
+.flammes-2 .f:nth-child(4) {
+  right: 3%;
+  width: 65px;
+  height: 105px;
+  background: linear-gradient(to top, #ff6600, #ff2200, transparent);
+  animation: feu2 0.95s infinite alternate;
+  animation-delay: 0.1s;
+  opacity: 0.9;
+  filter: blur(1.5px);
+}
+.flammes-2 .f:nth-child(5) {
+  right: 8%;
+  width: 45px;
+  height: 72px;
+  background: linear-gradient(to top, #ff9900, #ff4400, transparent);
+  animation: feu1 0.85s infinite alternate;
+  animation-delay: 0.3s;
+  opacity: 0.75;
+  filter: blur(1px);
+}
+.flammes-2 .f:nth-child(6) {
+  left: 35%;
+  width: 80px;
+  height: 130px;
+  background: linear-gradient(to top, #ff5500, #ff1500, #cc000040, transparent);
+  animation: feu1 1.15s infinite alternate;
+  animation-delay: 0.05s;
+  opacity: 0.9;
+  filter: blur(2.5px);
+}
+.flammes-2 .f:nth-child(7) {
+  left: 44%;
+  width: 50px;
+  height: 85px;
+  background: linear-gradient(to top, #ff8800, #ff3300, transparent);
+  animation: feu2 0.7s infinite alternate;
+  animation-delay: 0.22s;
+  opacity: 0.85;
+  filter: blur(1px);
+}
+.flammes-2 .f:nth-child(8) {
+  left: 52%;
+  width: 90px;
+  height: 145px;
+  background: linear-gradient(to top, #ff4400, #ff0000, #aa000040, transparent);
+  animation: feu1 1.3s infinite alternate;
+  animation-delay: 0.4s;
+  opacity: 0.95;
+  filter: blur(3px);
+}
+
+.flammes-2::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  background: linear-gradient(to top, rgba(255, 80, 0, 0.35), transparent);
+  filter: blur(8px);
+}
+
+/* --- ERREUR 3 (tout en feu) --- */
+#err3:checked ~ .flammes-3 {
+  display: block;
+}
+.flammes-3 {
+  display: none;
+}
+
+.flammes-3 .f:nth-child(1) {
+  left: 0%;
+  width: 70px;
+  height: 130px;
+  background: linear-gradient(to top, #ff6600, #ff2200, transparent);
+  animation: feu1 0.9s infinite alternate;
+  opacity: 1;
+  filter: blur(2px);
+}
+.flammes-3 .f:nth-child(2) {
+  left: 5%;
+  width: 45px;
+  height: 80px;
+  background: linear-gradient(to top, #ff9900, #ff5500, transparent);
+  animation: feu2 0.65s infinite alternate;
+  animation-delay: 0.15s;
+  opacity: 0.9;
+  filter: blur(1px);
+}
+.flammes-3 .f:nth-child(3) {
+  left: 10%;
+  width: 85px;
+  height: 155px;
+  background: linear-gradient(to top, #ff4400, #ff0000, transparent);
+  animation: feu1 1.2s infinite alternate;
+  animation-delay: 0.3s;
+  opacity: 1;
+  filter: blur(3px);
+}
+.flammes-3 .f:nth-child(4) {
+  left: 18%;
+  width: 55px;
+  height: 100px;
+  background: linear-gradient(to top, #ff7700, #ff3300, transparent);
+  animation: feu2 1s infinite alternate;
+  animation-delay: 0.1s;
+  opacity: 0.85;
+  filter: blur(1.5px);
+}
+.flammes-3 .f:nth-child(5) {
+  left: 26%;
+  width: 75px;
+  height: 140px;
+  background: linear-gradient(to top, #ff5500, #ff1100, transparent);
+  animation: feu1 0.8s infinite alternate;
+  animation-delay: 0.25s;
+  opacity: 0.95;
+  filter: blur(2px);
+}
+.flammes-3 .f:nth-child(6) {
+  left: 35%;
+  width: 90px;
+  height: 165px;
+  background: linear-gradient(to top, #ff4400, #ff0000, transparent);
+  animation: feu2 1.1s infinite alternate;
+  animation-delay: 0.05s;
+  opacity: 1;
+  filter: blur(3px);
+}
+.flammes-3 .f:nth-child(7) {
+  left: 44%;
+  width: 55px;
+  height: 95px;
+  background: linear-gradient(to top, #ff8800, #ff3300, transparent);
+  animation: feu1 0.7s infinite alternate;
+  animation-delay: 0.2s;
+  opacity: 0.9;
+  filter: blur(1px);
+}
+.flammes-3 .f:nth-child(8) {
+  left: 53%;
+  width: 100px;
+  height: 180px;
+  background: linear-gradient(to top, #ff4400, #ff0000, transparent);
+  animation: feu2 1.3s infinite alternate;
+  animation-delay: 0.38s;
+  opacity: 1;
+  filter: blur(3.5px);
+}
+.flammes-3 .f:nth-child(9) {
+  right: 18%;
+  width: 70px;
+  height: 135px;
+  background: linear-gradient(to top, #ff6600, #ff2200, transparent);
+  animation: feu1 0.95s infinite alternate;
+  animation-delay: 0.12s;
+  opacity: 0.95;
+  filter: blur(2px);
+}
+.flammes-3 .f:nth-child(10) {
+  right: 10%;
+  width: 50px;
+  height: 90px;
+  background: linear-gradient(to top, #ff9900, #ff4400, transparent);
+  animation: feu2 0.75s infinite alternate;
+  animation-delay: 0.28s;
+  opacity: 0.8;
+  filter: blur(1px);
+}
+.flammes-3 .f:nth-child(11) {
+  right: 5%;
+  width: 80px;
+  height: 150px;
+  background: linear-gradient(to top, #ff5500, #ff1100, transparent);
+  animation: feu1 1s infinite alternate;
+  animation-delay: 0.45s;
+  opacity: 1;
+  filter: blur(2.5px);
+}
+.flammes-3 .f:nth-child(12) {
+  right: 0%;
+  width: 60px;
+  height: 115px;
+  background: linear-gradient(to top, #ff7700, #ff3300, transparent);
+  animation: feu2 0.85s infinite alternate;
+  animation-delay: 0.08s;
+  opacity: 0.9;
+  filter: blur(1.5px);
+}
+
+.flammes-3::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 140px;
+  background: linear-gradient(
+    to top,
+    rgba(255, 60, 0, 0.6),
+    rgba(255, 30, 0, 0.3),
+    transparent
+  );
+  filter: blur(12px);
+}
+.flammes-3::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 100% 60% at 50% 100%,
+    rgba(255, 50, 0, 0.3),
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Panneau en crise à 3 erreurs */
+#err3:checked ~ .pageLayout .panneauControle {
+  animation: panneauCrise 0.5s ease-in-out infinite alternate;
+}
+@keyframes panneauCrise {
+  0% {
+    box-shadow:
+      0 40px 80px rgba(0, 0, 0, 0.97),
+      0 0 80px rgba(255, 50, 0, 0.5),
+      0 0 150px rgba(255, 0, 0, 0.3),
+      inset 4px 0 20px rgba(0, 0, 0, 0.4);
+  }
+  100% {
+    box-shadow:
+      0 40px 80px rgba(0, 0, 0, 0.97),
+      0 0 120px rgba(255, 100, 0, 0.7),
+      0 0 200px rgba(255, 0, 0, 0.5),
+      inset 4px 0 20px rgba(0, 0, 0, 0.4);
+  }
+}
+
+#err3:checked ~ .lumiereAlarme {
+  background:
+    radial-gradient(
+      ellipse 100% 70% at 50% 100%,
+      rgba(255, 80, 0, 0.55),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 80% 50% at 50% -5%,
+      rgba(255, 0, 0, 0.6),
+      transparent 70%
+    );
+  animation: alerteCrise 0.4s ease-in-out infinite alternate;
+}
+@keyframes alerteCrise {
+  0% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+#err3:checked ~ .pageLayout .chronometre {
+  animation: chronoCrise 0.25s ease-in-out infinite alternate;
+  color: #ff8800;
+  text-shadow:
+    0 0 4px #fff,
+    0 0 12px #ff8800,
+    0 0 30px #ff4400,
+    0 0 60px rgba(255, 100, 0, 0.7);
+}
+@keyframes chronoCrise {
+  0% {
+    opacity: 1;
+    transform: skewX(0deg);
+  }
+  40% {
+    opacity: 0.6;
+    transform: skewX(-1deg);
+  }
+  100% {
+    opacity: 0.9;
+    transform: skewX(0.5deg);
+  }
+}
+
+/* ============================================
+   ANIMATIONS FEU
+============================================ */
+@keyframes feu1 {
+  0% {
+    transform: scaleX(1) scaleY(1) rotate(-2deg);
+  }
+  33% {
+    transform: scaleX(0.85) scaleY(1.1) rotate(3deg);
+  }
+  66% {
+    transform: scaleX(1.1) scaleY(0.92) rotate(-1deg);
+  }
+  100% {
+    transform: scaleX(0.9) scaleY(1.05) rotate(2deg);
+  }
+}
+@keyframes feu2 {
+  0% {
+    transform: scaleX(1.05) scaleY(0.95) rotate(2deg);
+  }
+  40% {
+    transform: scaleX(0.88) scaleY(1.08) rotate(-3deg);
+  }
+  100% {
+    transform: scaleX(1) scaleY(1) rotate(1deg);
+  }
+}
+
+/* ============================================
+   RESPONSIVE
+============================================ */
+@media (max-width: 420px) {
+  .panneauLabel {
+    font-size: 8px;
+    letter-spacing: 4px;
+  }
+  .essaisSlots {
+    gap: 10px;
+  }
 }
