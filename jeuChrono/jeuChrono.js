@@ -77,7 +77,7 @@ function stopChrono() {
 
 function victoire(temps)  {
     sonVictoire.play();
-    texteStatut.textContent = `${temps.toFixed(2)}s — CODE : ${MOT_CODE} !`;
+    texteStatut.textContent = `${temps.toFixed(2)}s — CODE : ${MOT_CODE}`;
     bouton.disabled = true;
     
     afficherBoutonSuivant();
