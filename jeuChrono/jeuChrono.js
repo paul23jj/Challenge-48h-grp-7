@@ -26,7 +26,7 @@ function handleClick() {
 function startChrono() {
     running = true;
     startTime = Date.now();
-    textStatut.textContent = 'Mémorise bien';
+    texteStatut.textContent = 'Mémorise bien';
     timerDisplay.style.visibility = 'visible';
 
     timerId = setInterval(updateTimer, 10);
