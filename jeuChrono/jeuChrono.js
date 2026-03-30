@@ -88,7 +88,7 @@ function echec(temps) {
         return;
     }
 
-    setTimeout(reset, 3000);
+    setTimeout(reset, 1000);
 }
 
 function reset () {
