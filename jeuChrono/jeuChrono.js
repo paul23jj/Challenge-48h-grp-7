@@ -4,7 +4,7 @@ const TOLERANCE = 0.5;
 
 const slots = document.querySelectorAll('.slot');
 // Constantes à modifier pour sacha
-const MOT_CODE = '';
+const MOT_CODE = 'ch@ll3nge';
 const cheminNiveauSuivant = ''
 
 const bouton = document.querySelector('#grosBouton');

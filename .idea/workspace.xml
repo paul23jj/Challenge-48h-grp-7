@@ -4,16 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="64c0ebeb-fe45-4932-9618-16642d1e574e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/jeuChrono/jeuChrono.js" beforeDir="false" afterPath="$PROJECT_DIR$/jeuChrono/jeuChrono.js" afterDir="false" />
-    </list>
+    <list default="true" id="64c0ebeb-fe45-4932-9618-16642d1e574e" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="8" />
+    <option name="cachedIndexableFilesCount" value="9" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="Git.Settings">
@@ -70,7 +68,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1774856651348</updated>
-      <workItem from="1774856652933" duration="9799000" />
+      <workItem from="1774856652933" duration="10413000" />
     </task>
     <servers />
   </component>
