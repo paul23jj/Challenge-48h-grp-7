@@ -76,12 +76,12 @@ function victoire (temps)  {
 
 function echec(temps) {
     texteStatut.textContent = `${temps.toFixed(2)}s — RATÉ !`;
-    flammes.forEach(f => f.classList.add('active'));
     bouton.disabled = true;
 
     essais++;
     nombreEssais.textContent = `${essais} / 3`;
-    slots[essais - 1].textContent = '❌';
+    
+    document.getElementById('err' + essais).checked = true;
 
     if (essais >= 3) {
         texteStatut.textContent = '💀 GAME OVER';
