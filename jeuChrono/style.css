@@ -1247,3 +1247,72 @@ input[type="checkbox"] {
     font-size: clamp(14px, 4vw, 20px); /* Réduit le texte "NE PAS PRESSER" */
   }
 }
+/* ============================================
+   BOUTON JEU SUIVANT - OVERLAY CENTRAL
+============================================ */
+.boutonSuivant {
+  /* La magie est ici : on sort le bouton du flux et on le fixe au centre de l'écran */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999; /* S'assure qu'il passe au-dessus du panneau et du bouton rouge */
+
+  /* Police et Texte */
+  font-family: "Orbitron", monospace;
+  font-weight: 900;
+  font-size: 24px; /* Encore plus grand pour l'effet pop-up */
+  color: #000000;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  text-align: center;
+
+  /* Apparence Neon */
+  background-color: #00ff00;
+  background-image: radial-gradient(circle at center, #ccff00 0%, #00ff00 100%);
+  border: 3px solid #ffffff;
+  border-radius: 8px;
+  padding: 20px 40px;
+  cursor: pointer;
+
+  /* Glow ultra puissant */
+  box-shadow:
+    0 0 20px rgba(0, 255, 0, 0.8),
+    0 0 60px rgba(0, 255, 0, 0.6),
+    inset 0 0 15px rgba(255, 255, 255, 0.9);
+
+  transition: all 0.2s ease-in-out;
+  animation: boutonAlerteSuivant 1.5s infinite alternate;
+}
+
+.boutonSuivant:hover {
+  /* On garde le translate(-50%, -50%) de base pour que le bouton reste centré quand il grossit */
+  transform: translate(-50%, -52%) scale(1.05);
+  background-color: #ffffff;
+  background-image: radial-gradient(circle at center, #ffffff 0%, #ffff00 100%);
+  color: #000;
+  box-shadow:
+    0 0 30px rgba(255, 255, 0, 1),
+    0 0 80px rgba(255, 255, 0, 0.8),
+    inset 0 0 20px rgba(255, 255, 255, 1);
+}
+
+.boutonSuivant:active {
+  transform: translate(-50%, -48%) scale(0.97);
+  background-image: linear-gradient(to bottom, #00cc00 0%, #009900 100%);
+  box-shadow: inset 0 5px 15px rgba(0, 0, 0, 0.6);
+  animation: none;
+}
+
+@keyframes boutonAlerteSuivant {
+  0% {
+    box-shadow:
+      0 0 20px rgba(0, 255, 0, 0.6),
+      0 0 40px rgba(0, 255, 0, 0.4);
+  }
+  100% {
+    box-shadow:
+      0 0 30px rgba(0, 255, 0, 1),
+      0 0 80px rgba(0, 255, 0, 0.8);
+  }
+}

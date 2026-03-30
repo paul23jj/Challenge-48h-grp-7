@@ -12,9 +12,10 @@ const nombreEssais= document.querySelector('#nombreEssais');
 
 // --- CHARGEMENT DES SONS ---
 // Remplace les textes entre guillemets par les vrais liens (URL locale ou web) de tes fichiers audio (.mp3 ou .wav)
-const sonVictoire = new Audio('LIEN_SON_VICTOIRE.mp3'); 
-const sonEchec = new Audio('LIEN_SON_ECHEC.mp3');
-const sonGameOver = new Audio('LIEN_SON_GAME_OVER.mp3'); 
+const sonVictoire = new Audio('sons/SonReussite.mp3'); 
+const sonEchec1   = new Audio('sons/SonEchec1.mp3'); 
+const sonEchec2   = new Audio('sons/SonEchec2.mp3'); 
+const sonEchec3   = new Audio('sons/SonEchec3.mp3');
 
 let timerId= null;
 let startTime= null;
@@ -91,18 +92,19 @@ function echec(temps) {
     // Coche la case d'erreur pour déclencher les flammes CSS
     document.getElementById('err' + essais).checked = true;
 
-    if (essais >= 3) {
-        sonGameOver.play(); // Déclenche le son de Game Over
+    // --- CORRECTION : On utilise les bons sons selon l'essai ---
+    if (essais === 1) {
+        sonEchec1.play();
+    } else if (essais === 2) {
+        sonEchec2.play();
+    } else if (essais >= 3) {
+        sonEchec3.play(); // Déclenche le son de Game Over (le pompe)
+        
         texteStatut.textContent = '💀 DESTRUCTION IMMINENTE - GAME OVER';
-        
-        // NOUVEAUTÉ : On affiche le bouton même en cas de défaite totale
         afficherBoutonSuivant(); 
-        
-        // On s'arrête ici avec "return", le jeu est définitivement bloqué.
         return; 
     }
 
-    sonEchec.play(); // Déclenche le son d'échec simple
     texteStatut.textContent = `${temps.toFixed(2)}s — RATÉ !`;
     
     // On redonne une chance après 1.5 secondes
@@ -126,22 +128,25 @@ function reset() {
 }
 
 // Fonction pour fabriquer et afficher le bouton "Jeu Suivant"
+// Fonction pour fabriquer et afficher le bouton "Jeu Suivant"
 function afficherBoutonSuivant() {
-    // Si le bouton existe déjà (pour éviter d'en créer plusieurs), on ne fait rien
     if (document.getElementById('btnSuivant')) return;
 
-    // Création du bouton
     const btn = document.createElement('button');
     btn.id = 'btnSuivant';
-    btn.textContent = 'JEU SUIVANT ➔';
-    btn.className = 'boutonSuivant'; // On lui donne une classe pour le styliser en CSS
     
-    // L'action à effectuer quand on clique dessus
+    // CORRECTION : Change le texte selon si on a gagné ou perdu
+    if (essais >= 3) {
+        btn.textContent = 'RECOMMENCER ➔';
+    } else {
+        btn.textContent = 'JEU SUIVANT ➔';
+    }
+    
+    btn.className = 'boutonSuivant'; 
+    
     btn.onclick = () => {
-        // Pour l'instant on recharge la page, on pourra changer ça pour aller vers une autre page web.
         window.location.reload(); 
     };
 
-    // On l'ajoute dans la zone d'informations en bas du panneau
     document.querySelector('.zoneInfos').appendChild(btn);
 }
