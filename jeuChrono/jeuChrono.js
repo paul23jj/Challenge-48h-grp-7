@@ -1,4 +1,4 @@
-const TEMPS_VISIBLE = [5, 7, 9];
+const TEMPS_VISIBLE = [5, 6, 7];
 const CIBLE = 10;
 const TOLERANCE = 0.5;
 
