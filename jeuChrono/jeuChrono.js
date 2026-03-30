@@ -69,7 +69,7 @@ function stopChrono() {
 }
 
 function victoire (temps)  {
-    texteStatut.textContent = `${temps.toFixed(2)}s — PARFAIT !`;
+    texteStatut.textContent = `${temps.toFixed(2)}s — CODE : ${MOT_CODE} !`;
     bouton.disabled = true;
     setTimeout(reset, 3000);
 }
