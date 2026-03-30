@@ -1,4 +1,4 @@
-const TEMPS_VISIBLE = 5;
+const TEMPS_VISIBLE = [5, 7, 9];
 const CIBLE = 10;
 const TOLERANCE = 0.5;
 
@@ -39,10 +39,11 @@ function startChrono() {
 
     timerId = setInterval(updateTimer, 10);
 
+    const dureeVisible = TEMPS_VISIBLE[essais] * 1000;
     setTimeout( () => {
         timerDisplay.style.visibility = 'hidden';
         texteStatut.textContent = 'Appuie à 10.00s ! ';
-    }, TEMPS_VISIBLE * 1000);
+    }, dureeVisible);
 }
 
 function updateTimer() {
