@@ -1247,3 +1247,7 @@ input[type="checkbox"] {
     font-size: clamp(14px, 4vw, 20px); /* Réduit le texte "NE PAS PRESSER" */
   }
 }
+
+#volume {
+  font-size: 25px;
+}
