@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Séquence d'Urgence Centrale</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Orbitron:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <input type="checkbox" id="err1" />
+    <input type="checkbox" id="err2" />
+    <input type="checkbox" id="err3" />
+
+    <div class="flammes-1 flammes-zone">
+      <div class="f"></div>
+      <div class="f"></div>
+      <div class="f"></div>
+      <div class="f"></div>
+      <div class="f"></div>
+    </div>
+
+    <div class="flammes-2 flammes-zone">
+      <div class="f"></div>
+      <div class="f"></div>
+      <div class="f"></div>
+      <div class="f"></div>
+      <div class="f"></div>
+      <div class="f"></div>
+      <div class="f"></div>
+      <div class="f"></div>
+    </div>
+
+    <div class="flammes-3 flammes-zone">
+      <div class="f"></div>
+      <div class="f"></div>
+      <div class="f"></div>
+      <div class="f"></div>
+      <div class="f"></div>
+      <div class="f"></div>
+      <div class="f"></div>
+      <div class="f"></div>
+      <div class="f"></div>
+      <div class="f"></div>
+      <div class="f"></div>
+      <div class="f"></div>
+    </div>
+
+    <div class="lumiereAlarme"></div>
+
+    <div class="pageLayout">
+      <div class="panneauControle">
+        <p class="panneauLabel">CONTROL PANEL — UNIT 7-Ω</p>
+
+        <div class="blocLore">
+          <h3>CLASSIFIÉ : DIRECTIVE OMEGA</h3>
+          <p>
+            Cette installation maintient la stabilité du noyau énergétique
+            mondial. Le réacteur est en surcharge critique.
+          </p>
+          <p>
+            <strong>MISSION :</strong> Enclenchez la purge manuelle (bouton
+            central) <strong>EXACTEMENT à 10.00 secondes</strong>.
+          </p>
+          <p>
+            Toute désynchronisation entraînera la destruction de l'usine. Vous
+            avez 3 essais. (Nous avons laissé une petite tolérance de timer car
+            nous connaissons le niveau du Groupe 8). </br></br><strong id="volume">AUGMENTER LE VOLUME AU MAX
+            POUR PLUS DE FUN !</strong>
+          </p>
+        </div>
+        <div class="ecranDigital">
+          <span class="ecranLabel">TIME REMAINING</span>
+          <p class="chronometre" id="affichageTimer">10:00</p>
+        </div>
+
+        <div class="essaisWrapper">
+          <span class="essaisLabel">TENTATIVES RESTANTES</span>
+          <div class="essaisSlots">
+            <label class="slot slot-1" for="err1" title="Erreur 1"></label>
+            <label class="slot slot-2" for="err2" title="Erreur 2"></label>
+            <label class="slot slot-3" for="err3" title="Erreur 3"></label>
+          </div>
+        </div>
+
+        <div class="zoneDanger">
+          <button class="boutonUrgence" id="grosBouton"></button>
+        </div>
+
+        <div class="zoneInfos">
+          <p class="consigne" id="texteStatut">NE PAS PRESSER</p>
+          <div class="compteurEssais">
+            TENTATIVES : <span id="nombreEssais">0 / 3</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="usineContainer"></div>
+
+    <div class="employeFuyant">🏃</div>
+
+    <div class="ticker">
+      <span class="tickerInner">
+        ⚠ ALERTE CRITIQUE ⚠ DANGER ZONE ACTIVE ⚠ ÉVACUATION IMMÉDIATE ⚠
+        PROTOCOLE D'URGENCE ENCLENCHÉ ⚠ NE PAS PRESSER LE BOUTON ⚠ ALERTE
+        CRITIQUE ⚠ DANGER ZONE ACTIVE ⚠ ÉVACUATION IMMÉDIATE ⚠ PROTOCOLE
+        D'URGENCE ENCLENCHÉ ⚠ NE PAS PRESSER LE BOUTON ⚠
+      </span>
+    </div>
+
+    <div class="scanlines"></div>
+
+    <script src="../../shared/global-timer.js"></script>
+    <script src="jeuChrono.js"></script>
+    <script src="../../shared/utils.js"></script>
+    <script src="../../shared/complete.js"></script>
+  </body>
+</html>

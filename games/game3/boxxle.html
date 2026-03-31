@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="./style.css">
+    <title>Boxxle.io</title>
+
+</head>
+
+<body>
+    <div id="container">
+        <div id="gameboard">
+        </div>
+        <button id="resetBtn">Recommencer</button>
+        <button id="hintBtn" disabled>Indice</button>
+    </div>
+    <div id="customAlert" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Message</h2>
+            <p id="modalMessage"></p>
+            <button id="modalClose">OK</button>
+        </div>
+    </div>
+    <script src="../../shared/utils.js"></script>
+    <script src="../../shared/complete.js"></script>
+    <script src="../../shared/global-timer.js"></script>
+    <script type="module" src="./index.js"></script>
+</body>
+
+</html>

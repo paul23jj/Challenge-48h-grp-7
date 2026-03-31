@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHALLENGE-48H // Interface Principale</title>
+
+  <!-- Thème global partagé -->
+  <link rel="stylesheet" href="shared/theme.css" />
+  <!-- Styles spécifiques au hub -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Overlay scanlines CRT (ambiance) -->
+  <div class="crt-overlay" aria-hidden="true"></div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       EN-TÊTE / HEADER
+       ══════════════════════════════════════════════════════════════════════ -->
+  <header class="hub-header">
+    <div class="hub-header__inner">
+
+      <!-- Logo / Titre principal -->
+      <div class="hub-header__logo">
+        <span class="hub-header__logo-bracket text-primary">[</span>
+        <span class="hub-header__logo-text">CHALLENGE</span>
+        <span class="hub-header__logo-sep text-primary">-</span>
+        <span class="hub-header__logo-null text-danger">48H</span>
+        <span class="hub-header__logo-bracket text-primary">]</span>
+      </div>
+
+      <!-- Sous-titre narratif -->
+      <p class="hub-header__subtitle">
+        <span class="text-dim">// </span>
+        <span id="js-subtitle">Initialisation du système…</span>
+        <span class="anim-blink text-primary">█</span>
+      </p>
+
+      <!-- Barre d'état droite -->
+      <div class="hub-header__status">
+        <span class="text-dim text-sm">SCORE TOTAL :</span>
+        <span id="js-total-score" class="text-primary hub-score">0000</span>
+        <a href="login.html" class="btn btn-sm" style="border-color:var(--color-primary);color:var(--color-primary);" title="Connexion système">LOGIN</a>
+        <button class="btn btn-sm btn-danger" id="js-reset-btn" title="Réinitialiser la progression">RESET</button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       CONTENEUR PRINCIPAL
+       ══════════════════════════════════════════════════════════════════════ -->
+  <main class="hub-main">
+
+    <!-- ── Bannière narrative ─────────────────────────────────────────── -->
+    <section class="hub-narrative panel anim-fade-in">
+      <p class="hub-narrative__text" id="js-narrative">
+        <span class="text-secondary">TRANSMISSION REÇUE — </span>
+        Origine inconnue. Signal crypté. Quelqu'un essaie de te contacter.
+        Pour décoder le message, tu dois traverser quatre niveaux de sécurité.
+        Chaque énigme que tu résous rapproche la vérité.
+        <span class="text-danger">Méfie-toi.</span>
+        Ils t'observent.
+      </p>
+    </section>
+
+    <!-- ── Grille des jeux ────────────────────────────────────────────── -->
+    <section class="hub-grid" id="js-game-grid" aria-label="Sélection des missions">
+
+      <!-- ── Carte Jeu 1 : game2 ─────────────────────────────────── -->
+      <article class="game-card" id="card-game2" data-game="game2">
+        <div class="game-card__header">
+          <span class="game-card__num text-dim">01</span>
+          <span class="game-card__badge badge badge-playing" id="badge-game2">▶ DISPONIBLE</span>
+        </div>
+        <h2 class="game-card__title">SNAKE.EXE</h2>
+        <p class="game-card__desc text-dim">
+          Mange 10 pommes avant la fin du compte à rebours.
+          Un indice secret t'attend au bout. 3 vies. 3 minutes. Bonne chance.
+        </p>
+        <div class="game-card__tags">
+          <span class="tag">ARCADE</span>
+          <span class="tag">TIMING</span>
+        </div>
+        <div class="game-card__footer">
+          <span class="game-card__score text-dim" id="score-game2">Score : —</span>
+          <a href="games/game2/index.html" class="btn game-card__btn" id="btn-game2">DÉMARRER</a>
+        </div>
+      </article>
+
+      <!-- ── Carte Jeu 2 : game3 ─────────────────────────────────── -->
+      <article class="game-card game-card--locked" id="card-game3" data-game="game3">
+        <div class="game-card__header">
+          <span class="game-card__num text-dim">02</span>
+          <span class="game-card__badge badge badge-locked" id="badge-game3">🔒 VERROUILLÉ</span>
+        </div>
+        <h2 class="game-card__title">Boxxle</h2>
+        <p class="game-card__desc text-dim">
+          Un Sokoban haletant en 5 niveaux. Pousse les caisses sur les cibles.
+          Chaque niveau cache un secret. Réfléchis avant d'agir.
+        </p>
+        <div class="game-card__tags">
+          <span class="tag">PUZZLE</span>
+          <span class="tag">RÉFLEXION</span>
+        </div>
+        <div class="game-card__footer">
+          <span class="game-card__score text-dim" id="score-game3">Score : —</span>
+          <a href="games/game3/index.html" class="btn game-card__btn" id="btn-game3" tabindex="-1" aria-disabled="true">ACCÈS REFUSÉ</a>
+        </div>
+      </article>
+
+      <!-- ── Carte Jeu 3 : game4 ─────────────────────────────────── -->
+      <article class="game-card game-card--locked" id="card-game4" data-game="game4">
+        <div class="game-card__header">
+          <span class="game-card__num text-dim">03</span>
+          <span class="game-card__badge badge badge-locked" id="badge-game4">🔒 VERROUILLÉ</span>
+        </div>
+        <h2 class="game-card__title">Séquence d'Urgence</h2>
+        <p class="game-card__desc text-dim">
+          Le réacteur est en surcharge critique. Enclenchez la purge manuelle
+          exactement à 10.00 secondes. Vous avez 3 essais. Bonne chance.
+        </p>
+        <div class="game-card__tags">
+          <span class="tag">RÉFLEXES</span>
+          <span class="tag">TIMING</span>
+        </div>
+        <div class="game-card__footer">
+          <span class="game-card__score text-dim" id="score-game4">Score : —</span>
+          <a href="games/game4/index.html" class="btn game-card__btn" id="btn-game4" tabindex="-1" aria-disabled="true">ACCÈS REFUSÉ</a>
+        </div>
+      </article>
+
+      <!-- ── Carte Jeu 4 : ARG (Signal Fantôme) ────────────────────── -->
+      <article class="game-card game-card--locked" id="card-arg" data-game="arg">
+        <div class="game-card__header">
+          <span class="game-card__num text-dim">04</span>
+          <span class="game-card__badge badge badge-locked" id="badge-arg">🔒 VERROUILLÉ</span>
+        </div>
+        <h2 class="game-card__title">Signal Fantôme</h2>
+        <p class="game-card__desc text-dim">
+          Un hacker anonyme t'a envoyé un message crypté.
+          Suis sa piste à travers trois énigmes pour découvrir la vérité.
+          ROT13, coordonnées GPS, chiffrement — chaque couche révèle davantage.
+        </p>
+        <div class="game-card__tags">
+          <span class="tag">ROT13</span>
+          <span class="tag">Morse</span>
+          <span class="tag">Chiffrement</span>
+        </div>
+        <div class="game-card__footer">
+          <span class="game-card__score text-dim" id="score-arg">Score : —</span>
+          <a href="games/arg/index.html" class="btn game-card__btn" id="btn-arg" tabindex="-1" aria-disabled="true">ACCÈS REFUSÉ</a>
+        </div>
+      </article>
+
+    </section>
+
+    <!-- ── Panneau de phrase ─────────────────────────────────────────── -->
+    <section class="hub-phrase-panel panel" id="js-phrase-panel">
+      <p class="text-dim text-sm text-center" style="margin-bottom:.6rem;letter-spacing:.15em;">// PHRASE SECRÈTE //</p>
+      <div class="hub-phrase-slots">
+        <div class="phrase-slot" id="phrase-slot-game2">???</div>
+        <div class="phrase-slot" id="phrase-slot-game3">???</div>
+        <div class="phrase-slot" id="phrase-slot-game4">???</div>
+        <div class="phrase-slot" id="phrase-slot-arg">???</div>
+      </div>
+    </section>
+
+    <!-- ── Pied de page narratif ──────────────────────────────────────── -->
+    <footer class="hub-footer">
+      <p class="text-dim text-sm text-center">
+        CHALLENGE-48H // <span class="text-primary">v1.0.0</span> //
+        CHRONOLOGIE CLASSIFIÉE —
+        <span id="js-date" class="text-secondary"></span>
+      </p>
+      <p class="text-dim text-sm text-center mt-sm">
+        Toute ressemblance avec des événements réels est intentionnelle.
+      </p>
+    </footer>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       MODAL DE CONFIRMATION RESET
+       ══════════════════════════════════════════════════════════════════════ -->
+  <div class="modal-overlay hidden" id="js-modal-reset" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal panel">
+      <h3 class="modal__title text-danger" id="modal-title">⚠ AVERTISSEMENT</h3>
+      <p>Cette action effacera toute la progression. Cette opération est irréversible.</p>
+      <p class="text-dim text-sm">Confirmes-tu la réinitialisation complète des données ?</p>
+      <div class="modal__actions">
+        <button class="btn btn-danger" id="js-modal-confirm">CONFIRMER</button>
+        <button class="btn" id="js-modal-cancel">ANNULER</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="shared/utils.js"></script>
+  <script src="hub.js"></script>
+  <script>window.ARG_TIMER_HUB = 'index.html';</script>
+  <script src="shared/global-timer.js"></script>
+
+  <!-- ══ OVERLAY BRAVO ═══════════════════════════════════════════════════════════ -->
+  <div class="bravo-overlay hidden" id="js-bravo-screen" role="dialog" aria-modal="true">
+    <div class="bravo-inner">
+      <div class="bravo-terminal">
+        <div class="bravo-titlebar">
+          <span class="tdot tdot-r"></span>
+          <span class="tdot tdot-y"></span>
+          <span class="tdot tdot-g"></span>
+          <span style="color:var(--color-text-dim);font-size:.7rem;letter-spacing:.1em;">ROOT@CHALLENGE-48H — ACCES_TOTAL.log</span>
+        </div>
+        <div class="bravo-body">
+          <pre class="bravo-text" id="js-bravo-text"></pre>
+        </div>
+      </div>
+      <div class="bravo-phrase" id="js-bravo-phrase"></div>
+      <div class="bravo-actions">
+        <button class="btn btn-primary btn-lg" id="js-bravo-close">◀ RETOUR AU HUB</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

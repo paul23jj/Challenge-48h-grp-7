@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>SNAKE.EXE</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Exo+2:wght@800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #05071a;
+  --panel:     #080d28;
+  --pink:      #ff2d78;
+  --pink-dim:  #7a1040;
+  --cyan:      #00e5ff;
+  --cyan-dim:  #006070;
+  --yellow:    #ffcc00;
+  --purple:    #b026ff;
+  --border:    #1a1f4a;
+  --glow-pink: 0 0 20px #ff2d7888;
+  --glow-cyan: 0 0 20px #00e5ff66;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--cyan);
+  font-family: 'Rajdhani', sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+}
+
+body::after {
+  content:'';
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.07) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events:none; z-index:0;
+}
+
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background: repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.08) 3px,rgba(0,0,0,0.08) 4px);
+  pointer-events:none; z-index:999;
+}
+
+.ambient {
+  position:fixed;
+  width: 600px; height: 400px;
+  left:50%; top:50%;
+  transform: translate(-50%,-50%);
+  background: radial-gradient(ellipse, rgba(176,38,255,0.12) 0%, rgba(0,229,255,0.06) 50%, transparent 70%);
+  pointer-events:none; z-index:0;
+}
+
+.hud {
+  display:flex; justify-content:space-between; align-items:stretch;
+  width: 524px;
+  background: linear-gradient(135deg, #0b1035, #080d28);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 10px 10px 0 0;
+  position:relative; z-index:10;
+  overflow: hidden;
+}
+.hud::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:2px;
+  background: linear-gradient(90deg, var(--purple), var(--pink), var(--cyan));
+}
+.hud-left {
+  display:flex; flex-direction:column; justify-content:center;
+  padding: 0.7rem 1.2rem;
+  gap: 2px;
+  border-right: 1px solid var(--border);
+  flex:1;
+}
+.hud-title {
+  font-family:'Exo 2', sans-serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.25em;
+  color: var(--cyan-dim);
+  text-transform: uppercase;
+}
+.hud-score {
+  font-family:'Exo 2', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--cyan);
+  text-shadow: var(--glow-cyan);
+  letter-spacing: 0.05em;
+}
+.hud-goal { font-size: 0.85rem; color: var(--yellow); letter-spacing: 0.05em; }
+
+.hud-mid {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding: 0.7rem 1rem;
+  border-right: 1px solid var(--border);
+}
+.hud-timer {
+  font-family:'Exo 2', sans-serif;
+  font-size: 1.9rem; font-weight: 900;
+  color: var(--cyan);
+  text-shadow: var(--glow-cyan);
+  letter-spacing: 0.1em;
+  transition: color 0.3s, text-shadow 0.3s;
+}
+.hud-timer.warn   { color: var(--yellow); text-shadow: 0 0 20px #ffcc0088; }
+.hud-timer.danger { color: var(--pink); text-shadow: var(--glow-pink); animation: pulse 0.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.hud-right {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding: 0.7rem 1rem; gap: 4px;
+}
+.hud-lives-label { font-size: 0.5rem; letter-spacing: 0.2em; color: var(--cyan-dim); text-transform: uppercase; }
+.hud-lives { font-size: 1rem; letter-spacing: 2px; }
+
+#gameCanvas {
+  display:block;
+  border-left: 2px solid var(--pink-dim);
+  border-right: 2px solid var(--cyan-dim);
+  border-top: none; border-bottom: none;
+  position:relative; z-index:10;
+  box-shadow:
+    -4px 0 20px rgba(255,45,120,0.3),
+     4px 0 20px rgba(0,229,255,0.3),
+     inset 0 0 60px rgba(0,0,0,0.6);
+}
+
+.bottombar {
+  width: 524px; padding: 0.45rem 1.2rem;
+  background: linear-gradient(135deg, #080d28, #0b1035);
+  border: 1px solid var(--border); border-top: none;
+  border-radius: 0 0 10px 10px;
+  display:flex; justify-content:space-between; align-items:center;
+  position:relative; z-index:10; overflow: hidden;
+}
+.bottombar::after {
+  content:'';
+  position:absolute; bottom:0; left:0; right:0; height:2px;
+  background: linear-gradient(90deg, var(--cyan), var(--purple), var(--pink));
+}
+.ctrl-key {
+  background: rgba(0,229,255,0.08);
+  border: 1px solid var(--cyan-dim);
+  padding: 1px 7px; border-radius: 3px;
+  color: var(--cyan); font-size: 0.78rem;
+}
+.version-tag { font-size: 0.72rem; color: var(--pink-dim); letter-spacing: 0.15em; font-family: 'Exo 2', sans-serif; }
+
+.overlay {
+  display:none; position:fixed; inset:0;
+  background: rgba(5,7,26,0.94);
+  z-index:100;
+  flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; gap:1.4rem;
+  backdrop-filter: blur(6px);
+}
+.overlay.show { display:flex; }
+
+.ov-title {
+  font-family:'Exo 2', sans-serif;
+  font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 900;
+  letter-spacing: 0.08em; line-height: 1;
+  animation: flicker 3s infinite;
+}
+@keyframes flicker { 0%,92%,100%{opacity:1} 94%{opacity:0.4} 96%{opacity:1} 98%{opacity:0.2} }
+.ov-title.cyan { color: var(--cyan); text-shadow: var(--glow-cyan), 0 0 60px rgba(0,229,255,0.3); }
+.ov-title.pink { color: var(--pink); text-shadow: var(--glow-pink), 0 0 60px rgba(255,45,120,0.3); }
+
+.ov-sub { font-size: 1rem; color: var(--cyan-dim); letter-spacing: 0.25em; text-transform: uppercase; font-family: 'Exo 2', sans-serif; }
+
+.intro-stats { display:flex; gap:1.2rem; flex-wrap:wrap; justify-content:center; }
+.istat {
+  background: linear-gradient(135deg, rgba(0,229,255,0.06), rgba(176,38,255,0.06));
+  border: 1px solid rgba(0,229,255,0.25);
+  border-radius: 8px; padding: 0.8rem 1.4rem; text-align: center;
+  position: relative; overflow: hidden;
+}
+.istat::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+}
+.istat-val { font-family:'Exo 2', sans-serif; font-size: 1.8rem; font-weight: 900; color: var(--cyan); text-shadow: var(--glow-cyan); }
+.istat-lbl { font-size: 0.72rem; color: var(--cyan-dim); letter-spacing: 0.2em; text-transform: uppercase; }
+
+.secret-box {
+  background: linear-gradient(135deg, rgba(255,45,120,0.08), rgba(176,38,255,0.08));
+  border: 2px solid var(--pink); border-radius: 10px; padding: 1.5rem 3rem;
+  box-shadow: var(--glow-pink), inset 0 0 30px rgba(255,45,120,0.05);
+  position: relative; overflow: hidden;
+}
+.secret-box::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background: linear-gradient(90deg, var(--purple), var(--pink), var(--cyan));
+}
+.secret-label { font-size: 0.75rem; color: var(--pink-dim); letter-spacing: 0.3em; text-transform: uppercase; font-family: 'Exo 2', sans-serif; margin-bottom: 0.6rem; }
+.secret-letter { font-family:'Exo 2', sans-serif; font-size: 5rem; font-weight: 900; color: var(--pink); text-shadow: var(--glow-pink), 0 0 60px rgba(255,45,120,0.4); animation: flicker 2s infinite; }
+
+.btn {
+  font-family:'Exo 2', sans-serif; font-size: 0.85rem; font-weight: 800;
+  letter-spacing: 0.25em; text-transform: uppercase; padding: 0.85rem 2.5rem;
+  background: transparent; cursor: pointer; border-radius: 6px;
+  position: relative; overflow: hidden;
+  transition: color 0.3s, box-shadow 0.3s;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+}
+.btn-cyan  { border: 2px solid var(--cyan); color: var(--cyan); }
+.btn-cyan::before { content:''; position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(135deg,var(--cyan),var(--purple));transition:left 0.3s;z-index:-1; }
+.btn-cyan:hover { color:#fff; box-shadow: var(--glow-cyan); }
+.btn-cyan:hover::before { left:0; }
+.btn-pink  { border: 2px solid var(--pink); color: var(--pink); }
+.btn-pink::before { content:''; position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(135deg,var(--pink),var(--purple));transition:left 0.3s;z-index:-1; }
+.btn-pink:hover { color:#fff; box-shadow: var(--glow-pink); }
+.btn-pink:hover::before { left:0; }
+.note-txt { font-size: 0.8rem; color: rgba(176,38,255,0.7); letter-spacing: 0.15em; font-family: 'Exo 2', sans-serif; }
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+
+<div class="hud">
+  <div class="hud-left">
+    <div class="hud-title">// SNAKE.EXE — MISSION ACTIVE</div>
+    <div class="hud-score">SCORE : <span id="score">0</span></div>
+    <div class="hud-goal">🎯 OBJECTIF : 10 POMMES</div>
+  </div>
+  <div class="hud-mid">
+    <div class="hud-timer" id="timer">03:00</div>
+  </div>
+  <div class="hud-right">
+    <div class="hud-lives-label">VIES</div>
+    <div class="hud-lives" id="lives">❤️❤️❤️</div>
+  </div>
+</div>
+
+<canvas id="gameCanvas" width="524" height="418"></canvas>
+
+<div class="bottombar">
+  <span style="font-size:0.82rem;color:var(--cyan-dim);letter-spacing:0.05em;">
+    <span class="ctrl-key">↑</span>
+    <span class="ctrl-key">↓</span>
+    <span class="ctrl-key">←</span>
+    <span class="ctrl-key">→</span>
+    &nbsp;DÉPLACER
+  </span>
+  <span class="version-tag">SNAKE v2.0</span>
+</div>
+
+<!-- INTRO -->
+<div class="overlay show" id="ov-intro">
+  <div class="ov-title cyan">SNAKE<span style="color:var(--pink)">.EXE</span></div>
+  <div class="ov-sub">// mange 10 pommes — obtiens le code //</div>
+  <div class="intro-stats">
+    <div class="istat"><div class="istat-val">10</div><div class="istat-lbl">POMMES</div></div>
+    <div class="istat"><div class="istat-val">3:00</div><div class="istat-lbl">TEMPS</div></div>
+    <div class="istat"><div class="istat-val">3</div><div class="istat-lbl">VIES</div></div>
+  </div>
+  <button class="btn btn-cyan" onclick="startGame()">[ LANCER ]</button>
+</div>
+
+<!-- GAME OVER -->
+<div class="overlay" id="ov-dead">
+  <div class="ov-title pink">GAME<br>OVER</div>
+  <div class="ov-sub" id="dead-msg">// serpent éliminé //</div>
+  <button class="btn btn-pink" onclick="resetGame()">[ RÉESSAYER ]</button>
+</div>
+
+<!-- VICTORY -->
+<div class="overlay" id="ov-win">
+  <div class="ov-title cyan">MISSION<br><span style="color:var(--pink)">ACCOMPLIE</span></div>
+  <div class="secret-box">
+    <div class="secret-label">// INDICE DÉVERROUILLÉ //</div>
+    <div class="secret-letter">ynov</div>
+  </div>
+  <div class="note-txt">NOTE BIEN CETTE LETTRE</div>
+  <div style="display:flex;gap:1rem;">
+    <button class="btn btn-pink" onclick="resetGame()">[ REJOUER ]</button>
+    <button class="btn btn-cyan" onclick="goToNext()">[ JEU SUIVANT → ]</button>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx    = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+const CELL = 22;
+const COLS = Math.floor(W / CELL);
+const ROWS = Math.floor(H / CELL);
+
+let snake, dir, nextDir;
+let apple, appleIsFake;
+let score, lives, timeLeft;
+let gameLoop, timerLoop;
+let running = false;
+let fakePommePosition;
+let fakePommeUsed;
+
+function startGame() {
+  hide('ov-intro');
+  resetState();
+  running = true;
+  startTimerLoop();
+  startGameLoop();
+}
+
+function resetState() {
+  snake             = [{x:11,y:9}];
+  dir               = {x:1,y:0};
+  nextDir           = {x:1,y:0};
+  score             = 0;
+  lives             = 3;
+  timeLeft          = 180;
+  fakePommePosition = 1 + Math.floor(Math.random() * 9);
+  fakePommeUsed     = false;
+  document.getElementById('score').textContent = '0';
+  document.getElementById('timer').textContent = '03:00';
+  document.getElementById('timer').className   = 'hud-timer';
+  document.getElementById('lives').textContent = '❤️❤️❤️';
+  spawnApple();
+}
+
+function resetGame() {
+  hide('ov-dead'); hide('ov-win');
+  clearInterval(gameLoop);
+  clearInterval(timerLoop);
+  startGame();
+}
+
+function startTimerLoop() {
+  clearInterval(timerLoop);
+  timerLoop = setInterval(() => {
+    timeLeft--;
+    const m = Math.floor(timeLeft/60), s = timeLeft%60;
+    const el = document.getElementById('timer');
+    el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    if (timeLeft <= 60) el.classList.add('warn');
+    if (timeLeft <= 20) { el.classList.remove('warn'); el.classList.add('danger'); }
+    if (timeLeft <= 0)  die('// temps écoulé //');
+  }, 1000);
+}
+
+function startGameLoop() {
+  clearInterval(gameLoop);
+  gameLoop = setInterval(step, 115);
+}
+
+function step() {
+  if (!running) return;
+  dir = nextDir;
+  const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+
+  if (head.x < 0 || head.x >= COLS || head.y < 0 || head.y >= ROWS) { loseLife(); return; }
+  if (snake.some(s => s.x === head.x && s.y === head.y))              { loseLife(); return; }
+
+  snake.unshift(head);
+
+  if (head.x === apple.x && head.y === apple.y) {
+    if (appleIsFake) {
+      score = Math.max(0, score-1);
+      document.getElementById('score').textContent = score;
+      fakePommeUsed = true;
+    } else {
+      score++;
+      document.getElementById('score').textContent = score;
+      if (score >= 10) {
+        clearInterval(gameLoop); clearInterval(timerLoop);
+        running = false;
+        finalScore = score * 10 + timeLeft; // score final pour ARG_complete
+        draw();
+        setTimeout(() => show('ov-win'), 300);
+        return;
+      }
+    }
+    spawnApple();
+  } else {
+    snake.pop();
+  }
+  draw();
+}
+
+function spawnApple() {
+  let pos;
+  do { pos = { x: Math.floor(Math.random()*COLS), y: Math.floor(Math.random()*ROWS) }; }
+  while (snake.some(s => s.x===pos.x && s.y===pos.y));
+  apple = pos;
+  appleIsFake = !fakePommeUsed && (score + 1 === fakePommePosition);
+}
+
+function loseLife() {
+  lives--;
+  document.getElementById('lives').textContent = '❤️'.repeat(Math.max(0,lives)) + '🖤'.repeat(Math.max(0,3-lives));
+  if (lives <= 0) { die('// serpent éliminé //'); return; }
+  score             = 0;
+  document.getElementById('score').textContent = '0';
+  fakePommePosition = 1 + Math.floor(Math.random() * 9);
+  fakePommeUsed     = false;
+  snake   = [{x:11,y:9}];
+  dir     = {x:1,y:0};
+  nextDir = {x:1,y:0};
+  spawnApple();
+}
+
+function die(msg) {
+  running = false;
+  clearInterval(gameLoop); clearInterval(timerLoop);
+  document.getElementById('dead-msg').textContent = msg;
+  draw();
+  setTimeout(() => show('ov-dead'), 400);
+}
+
+function draw() {
+  // Fond
+  ctx.fillStyle = '#05071a';
+  ctx.fillRect(0, 0, W, H);
+
+  // Grille cyan subtile
+  ctx.strokeStyle = 'rgba(0,229,255,0.05)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x <= COLS; x++) {
+    ctx.beginPath(); ctx.moveTo(x*CELL, 0); ctx.lineTo(x*CELL, H); ctx.stroke();
+  }
+  for (let y = 0; y <= ROWS; y++) {
+    ctx.beginPath(); ctx.moveTo(0, y*CELL); ctx.lineTo(W, y*CELL); ctx.stroke();
+  }
+
+  // Pomme
+  const ax = apple.x * CELL + CELL/2;
+  const ay = apple.y * CELL + CELL/2;
+  const r  = CELL/2 - 2;
+
+  if (appleIsFake) {
+    ctx.shadowColor = '#cc1155';
+    ctx.shadowBlur  = 10;
+    const gf = ctx.createRadialGradient(ax-2, ay-2, 1, ax, ay, r);
+    gf.addColorStop(0, '#ff4488');
+    gf.addColorStop(1, '#aa0033');
+    ctx.fillStyle = gf;
+  } else {
+    ctx.shadowColor = '#ff2d78';
+    ctx.shadowBlur  = 18;
+    const ga = ctx.createRadialGradient(ax-2, ay-2, 1, ax, ay, r);
+    ga.addColorStop(0, '#ff6699');
+    ga.addColorStop(1, '#cc0044');
+    ctx.fillStyle = ga;
+  }
+  ctx.beginPath();
+  ctx.arc(ax, ay, r, 0, Math.PI*2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  // Tige de pomme
+  ctx.fillStyle = appleIsFake ? '#882244' : '#b026ff';
+  ctx.fillRect(ax, apple.y*CELL+1, 2, 5);
+
+  // Serpent
+  snake.forEach((seg, i) => {
+    const px = seg.x * CELL;
+    const py = seg.y * CELL;
+    const pad = i === 0 ? 1 : 2;
+    const sz  = CELL - pad*2;
+
+    if (i === 0) {
+      ctx.shadowColor = '#00e5ff';
+      ctx.shadowBlur  = 18;
+      const gh = ctx.createLinearGradient(px, py, px+CELL, py+CELL);
+      gh.addColorStop(0, '#00e5ff');
+      gh.addColorStop(1, '#b026ff');
+      ctx.fillStyle = gh;
+    } else {
+      ctx.shadowBlur = 0;
+      const ratio = i / snake.length;
+      // cyan → pink le long du corps
+      const rv = Math.round(ratio * 255);
+      const gv = Math.round(229 - ratio * 184);
+      const bv = Math.round(255 - ratio * 135);
+      const alpha = 1 - ratio * 0.45;
+      ctx.fillStyle = `rgba(${rv},${gv},${bv},${alpha})`;
+    }
+
+    ctx.beginPath();
+    ctx.roundRect(px+pad, py+pad, sz, sz, i === 0 ? 5 : 4);
+    ctx.fill();
+  });
+  ctx.shadowBlur = 0;
+
+  // Yeux
+  const hx = snake[0].x*CELL, hy = snake[0].y*CELL;
+  ctx.fillStyle = '#05071a';
+  if (dir.x !== 0) {
+    ctx.fillRect(hx+(dir.x>0?14:3), hy+4,  3, 3);
+    ctx.fillRect(hx+(dir.x>0?14:3), hy+14, 3, 3);
+  } else {
+    ctx.fillRect(hx+4,  hy+(dir.y>0?14:3), 3, 3);
+    ctx.fillRect(hx+14, hy+(dir.y>0?14:3), 3, 3);
+  }
+  ctx.fillStyle = '#00e5ff';
+  if (dir.x !== 0) {
+    ctx.fillRect(hx+(dir.x>0?15:4), hy+5,  1, 1);
+    ctx.fillRect(hx+(dir.x>0?15:4), hy+15, 1, 1);
+  } else {
+    ctx.fillRect(hx+5,  hy+(dir.y>0?15:4), 1, 1);
+    ctx.fillRect(hx+15, hy+(dir.y>0?15:4), 1, 1);
+  }
+}
+
+document.addEventListener('keydown', e => {
+  const map = { ArrowUp:{x:0,y:-1}, ArrowDown:{x:0,y:1}, ArrowLeft:{x:-1,y:0}, ArrowRight:{x:1,y:0} };
+  if (map[e.key]) {
+    const nd = map[e.key];
+    if (!(nd.x === -dir.x && nd.y === -dir.y)) nextDir = nd;
+    e.preventDefault();
+  }
+});
+
+function show(id) { document.getElementById(id).classList.add('show'); }
+function hide(id) { document.getElementById(id).classList.remove('show'); }
+
+let finalScore = 0;
+function goToNext() {
+  if (typeof ARG_complete === 'function') {
+    ARG_complete('game2', finalScore, 'ynov');
+  } else {
+    window.location.href = '../../index.html';
+  }
+}
+
+draw();
+</script>
+<script src="../../shared/utils.js"></script>
+<script src="../../shared/complete.js"></script>
+<script src="../../shared/global-timer.js"></script>
+</body>
+</html>

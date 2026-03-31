@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ACCÈS TOTAL // CHALLENGE-48H</title>
+  <link rel="stylesheet" href="shared/theme.css" />
+  <!-- Garde : accessible uniquement si tous les jeux sont terminés -->
+  <script>
+    (function () {
+      try {
+        var state = JSON.parse(localStorage.getItem('arg_game_state') || '{}');
+        var games = (state && state.games) ? state.games : {};
+        var ids = ['game2', 'game3', 'game4', 'arg'];
+        var allDone = ids.every(function (id) {
+          return games[id] && games[id].status === 'completed';
+        });
+        if (!allDone) {
+          window.location.replace('index.html');
+        }
+      } catch (e) {
+        window.location.replace('index.html');
+      }
+    })();
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #000;
+      color: #00d4ff;
+      font-family: 'Courier New', Courier, monospace;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .crt-overlay {
+      position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,0.12) 2px, rgba(0,0,0,0.12) 4px
+      );
+    }
+
+    /* Particules de fond */
+    .particles {
+      position: fixed; inset: 0; overflow: hidden; z-index: 0;
+    }
+    .particle {
+      position: absolute;
+      bottom: -10px;
+      width: 2px;
+      background: #00d4ff;
+      border-radius: 1px;
+      animation: rise linear infinite;
+      opacity: 0;
+    }
+    @keyframes rise {
+      0%   { transform: translateY(0)  scaleY(1); opacity: 0; }
+      10%  { opacity: .7; }
+      90%  { opacity: .3; }
+      100% { transform: translateY(-100vh) scaleY(3); opacity: 0; }
+    }
+
+    .win-container {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 680px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+
+    /* Gros titre */
+    .win-title {
+      font-size: clamp(3rem, 10vw, 6.5rem);
+      font-weight: 900;
+      letter-spacing: .05em;
+      line-height: .9;
+      margin-bottom: 1rem;
+      animation: glitch 4s infinite;
+    }
+    .win-title .t1 { color: #00d4ff; text-shadow: 0 0 40px #00d4ff, 0 0 80px rgba(0,212,255,0.4); }
+    .win-title .t2 { color: #00ff88; text-shadow: 0 0 40px #00ff88, 0 0 80px rgba(0,255,136,0.4); }
+
+    @keyframes glitch {
+      0%,90%,100% { transform: none; }
+      92% { transform: translate(-3px, 1px) skewX(-2deg); filter: hue-rotate(20deg); }
+      94% { transform: translate(3px, -1px) skewX(2deg); }
+      96% { transform: none; }
+      98% { transform: translate(-1px, 2px); }
+    }
+
+    .win-sub {
+      font-size: .75rem;
+      letter-spacing: .3em;
+      color: rgba(0,212,255,0.5);
+      text-transform: uppercase;
+      margin-bottom: 2.5rem;
+    }
+
+    /* Terminal box */
+    .terminal {
+      background: rgba(0,0,0,0.85);
+      border: 1px solid #00d4ff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(0,212,255,0.15), inset 0 0 40px rgba(0,0,0,0.8);
+      text-align: left;
+      margin-bottom: 2rem;
+    }
+    .terminal-bar {
+      display: flex; align-items: center; gap: .4rem;
+      padding: .5rem .9rem;
+      background: rgba(0,212,255,0.08);
+      border-bottom: 1px solid rgba(0,212,255,0.2);
+    }
+    .tdot { width:10px;height:10px;border-radius:50%; display:inline-block; }
+    .tdot-r{background:#ff5f57;}.tdot-y{background:#febc2e;}.tdot-g{background:#28c840;}
+    .tbar-title { font-size:.65rem; color:rgba(0,212,255,0.4); letter-spacing:.12em; margin-left:.3rem; }
+    .terminal-body { padding: 1.2rem 1.5rem; }
+    .terminal-body pre {
+      font-size: .78rem;
+      line-height: 1.8;
+      color: #00d4ff;
+      white-space: pre-wrap;
+    }
+    .line-ok    { color: #00ff88; }
+    .line-warn  { color: #ffcc00; }
+    .line-cred  { color: #ffffff; font-weight: bold; letter-spacing: .08em; }
+    .line-sep   { color: rgba(0,212,255,0.3); }
+    .blink { animation: blink .8s step-end infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* Credentials box */
+    .cred-box {
+      display: flex; gap: 1.5rem; justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .cred-item {
+      background: rgba(0,212,255,0.05);
+      border: 1px solid rgba(0,212,255,0.3);
+      border-radius: 6px;
+      padding: .9rem 1.8rem;
+      position: relative; overflow: hidden;
+    }
+    .cred-item::before {
+      content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,#00d4ff,transparent);
+    }
+    .cred-label { font-size:.6rem; letter-spacing:.25em; color:rgba(0,212,255,0.5); text-transform:uppercase; margin-bottom:.3rem; }
+    .cred-value { font-size:1.3rem; font-weight:bold; letter-spacing:.1em; color:#fff; text-shadow:0 0 20px rgba(0,212,255,0.5); }
+
+    /* Confetti score */
+    .score-line {
+      font-size:.75rem; letter-spacing:.2em;
+      color: #00ff88;
+      margin-bottom: 2rem;
+    }
+
+    /* Bouton retour */
+    .btn-home {
+      display: inline-block;
+      padding: .8rem 2.5rem;
+      border: 1px solid rgba(0,212,255,0.5);
+      color: rgba(0,212,255,0.7);
+      font-family: inherit;
+      font-size: .75rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: all .2s;
+    }
+    .btn-home:hover {
+      border-color: #00d4ff;
+      color: #00d4ff;
+      box-shadow: 0 0 20px rgba(0,212,255,0.2);
+    }
+  </style>
+</head>
+<body>
+  <div class="crt-overlay" aria-hidden="true"></div>
+  <div class="particles" id="particles"></div>
+
+  <div class="win-container">
+
+    <div class="win-title">
+      <div class="t1">ACCÈS</div>
+      <div class="t2">ACCORDÉ</div>
+    </div>
+    <p class="win-sub">// système compromis — mission accomplie //</p>
+
+    <div class="terminal">
+      <div class="terminal-bar">
+        <span class="tdot tdot-r"></span>
+        <span class="tdot tdot-y"></span>
+        <span class="tdot tdot-g"></span>
+        <span class="tbar-title">ROOT@CHALLENGE-48H — SESSION_ACTIVE.log</span>
+      </div>
+      <div class="terminal-body">
+        <pre id="terminal-text"></pre>
+      </div>
+    </div>
+
+    <div class="cred-box">
+      <div class="cred-item">
+        <div class="cred-label">LOGIN</div>
+        <div class="cred-value">ynov26</div>
+      </div>
+      <div class="cred-item">
+        <div class="cred-label">PASSWORD</div>
+        <div class="cred-value">ch@ll3nge_48h</div>
+      </div>
+    </div>
+
+    <p class="score-line" id="scoreDisplay"></p>
+
+    <a href="index.html" class="btn-home">◀ Retour au hub</a>
+
+  </div>
+
+  <script src="shared/utils.js"></script>
+  <script>
+    /* ── Particules ──────────────────────────────────────────────────── */
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 40; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left     = Math.random() * 100 + 'vw';
+      p.style.height   = (20 + Math.random() * 60) + 'px';
+      p.style.opacity  = '0';
+      p.style.animationDuration  = (3 + Math.random() * 6) + 's';
+      p.style.animationDelay     = (Math.random() * 5) + 's';
+      p.style.background = Math.random() > .7 ? '#00ff88' : '#00d4ff';
+      container.appendChild(p);
+    }
+
+    /* ── Score total depuis localStorage ────────────────────────────── */
+    const state = (typeof ARG !== 'undefined') ? ARG.loadState() : null;
+    const totalScore = state ? state.totalScore : 0;
+    if (totalScore > 0) {
+      document.getElementById('scoreDisplay').textContent =
+        `// SCORE TOTAL : ${String(totalScore).padStart(4,'0')} pts //`;
+    }
+
+    /* ── Typewriter terminal ─────────────────────────────────────────── */
+    const el = document.getElementById('terminal-text');
+    const lines = [
+      { text: '> AUTHENTIFICATION RÉUSSIE',            cls: 'line-ok'   },
+      { text: '> VÉRIFICATION DES ACCRÉDITATIONS...',  cls: ''          },
+      { text: '> [OK] PROTOCOLE OMEGA    — COMPLÉTÉ',  cls: 'line-ok'   },
+      { text: '> [OK] PROJET LAZARE      — COMPLÉTÉ',  cls: 'line-ok'   },
+      { text: '> [OK] SÉQUENCE D\'URGENCE — COMPLÉTÉE',cls: 'line-ok'   },
+      { text: '> [OK] SIGNAL FANTÔME     — COMPLÉTÉ',  cls: 'line-ok'   },
+      { text: '> ─────────────────────────────────────',cls: 'line-sep' },
+      { text: '> DÉCHIFFREMENT IDENTIFIANTS VALIDÉS',  cls: 'line-warn' },
+      { text: '> LOGIN    : ynov26',                    cls: 'line-cred' },
+      { text: '> PASSWORD : ch@ll3nge_48h',             cls: 'line-cred' },
+      { text: '> ─────────────────────────────────────',cls: 'line-sep' },
+      { text: '> FÉLICITATIONS, OPÉRATEUR.',            cls: 'line-ok'   },
+      { text: '> Le Signal Fantôme a été neutralisé.',  cls: ''          },
+      { text: '> /sys/logout --keep-logs',              cls: 'line-sep'  },
+    ];
+
+    let li = 0;
+    function printLine() {
+      if (li >= lines.length) {
+        el.innerHTML += `\n<span class="blink">█</span>`;
+        return;
+      }
+      const { text, cls } = lines[li];
+      const span = cls
+        ? `<span class="${cls}">${text}</span>`
+        : text;
+      el.innerHTML += (li > 0 ? '\n' : '') + span;
+      li++;
+      setTimeout(printLine, li < 2 ? 150 : li < 7 ? 80 : 200);
+    }
+    setTimeout(printLine, 400);
+  </script>
+  <!-- Timer global (pas d'expiration sur la page victoire) -->
+  <script>window.ARG_TIMER_HUB = 'index.html'; window.ARG_TIMER_SKIP_EXPIRY = true;</script>
+  <script src="shared/global-timer.js"></script>
+</body>
+</html>

@@ -1,0 +1,388 @@
+/* =============================================================================
+   theme.css — Variables CSS globales pour le site ARG
+   Importé par tous les fichiers CSS du projet
+   ============================================================================= */
+
+/* --------------------------------------------------------------------------- */
+/* Polices personnalisées (Google Fonts via import ou fallback monospace)      */
+/* --------------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+/* --------------------------------------------------------------------------- */
+/* Variables CSS globales — Palette et typographie                             */
+/* --------------------------------------------------------------------------- */
+:root {
+  /* Couleurs principales */
+  --color-bg:           #0a0a0a;       /* Fond quasi-noir */
+  --color-bg-secondary: #0f0f0f;       /* Fond légèrement plus clair */
+  --color-bg-card:      #111111;       /* Fond des cartes / panneaux */
+  --color-bg-elevated:  #161616;       /* Éléments surélevés */
+  --color-border:       #1a2a1a;       /* Bordure sombre verdâtre */
+  --color-border-glow:  #00ff4130;     /* Bordure avec lueur (semi-transparent) */
+
+  /* Couleurs d'accent — Palette "terminal vert" */
+  --color-primary:      #00ff41;       /* Vert terminal vif */
+  --color-primary-dim:  #00aa2a;       /* Vert atténué */
+  --color-primary-dark: #004410;       /* Vert très sombre (fond boutons) */
+  --color-secondary:    #00d4ff;       /* Cyan électrique */
+  --color-secondary-dim:#0088aa;       /* Cyan atténué */
+  --color-accent:       #ff6600;       /* Orange alerte */
+  --color-danger:       #ff2244;       /* Rouge danger */
+  --color-warning:      #ffcc00;       /* Jaune avertissement */
+  --color-success:      #00ff41;       /* Vert succès (= primary) */
+  --color-muted:        #3a3a3a;       /* Texte désactivé */
+
+  /* Couleurs de texte */
+  --color-text:         #c8ffc8;       /* Texte principal (vert pâle) */
+  --color-text-bright:  #00ff41;       /* Texte vif */
+  --color-text-dim:     #5a7a5a;       /* Texte secondaire atténué */
+  --color-text-header:  #00d4ff;       /* Titres (cyan) */
+
+  /* Typographie */
+  --font-mono:          'Share Tech Mono', 'Courier New', 'Lucida Console', monospace;
+  --font-display:       'Orbitron', 'Share Tech Mono', monospace;
+  --font-size-xs:       0.7rem;
+  --font-size-sm:       0.85rem;
+  --font-size-base:     1rem;
+  --font-size-md:       1.1rem;
+  --font-size-lg:       1.3rem;
+  --font-size-xl:       1.6rem;
+  --font-size-xxl:      2rem;
+  --font-size-hero:     3rem;
+
+  /* Espacement */
+  --space-xs:   4px;
+  --space-sm:   8px;
+  --space-md:   16px;
+  --space-lg:   24px;
+  --space-xl:   32px;
+  --space-xxl:  48px;
+  --space-hero: 64px;
+
+  /* Bordures et rayons */
+  --radius-sm:  2px;
+  --radius-md:  4px;
+  --radius-lg:  8px;
+  --border-width: 1px;
+
+  /* Ombres et effets lumineux */
+  --glow-primary:   0 0 8px #00ff4180,  0 0 20px #00ff4130;
+  --glow-secondary: 0 0 8px #00d4ff80,  0 0 20px #00d4ff30;
+  --glow-danger:    0 0 8px #ff224480,  0 0 20px #ff224430;
+  --glow-text:      0 0 6px #00ff4160;
+
+  /* Transitions */
+  --transition-fast:   0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow:   0.6s ease;
+
+  /* Largeurs / Layout */
+  --max-width:      1100px;
+  --sidebar-width:  240px;
+  --header-height:  70px;
+}
+
+/* --------------------------------------------------------------------------- */
+/* Reset et base globale                                                        */
+/* --------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  min-height: 100vh;
+  /* Grain de bruit subtil pour l'ambiance */
+  background-image:
+    radial-gradient(ellipse at 20% 50%, #001a0010 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 20%, #001a2a15 0%, transparent 50%);
+}
+
+/* Scrollbar personnalisée */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary-dim);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+/* --------------------------------------------------------------------------- */
+/* Typographie globale                                                          */
+/* --------------------------------------------------------------------------- */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--color-text-header);
+  letter-spacing: 0.05em;
+  line-height: 1.2;
+}
+
+a {
+  color: var(--color-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+a:hover {
+  color: var(--color-primary);
+  text-shadow: var(--glow-text);
+}
+
+p {
+  margin-bottom: var(--space-md);
+}
+
+code, pre {
+  font-family: var(--font-mono);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+code {
+  padding: 2px 6px;
+  font-size: var(--font-size-sm);
+  color: var(--color-secondary);
+}
+
+pre {
+  padding: var(--space-md);
+  overflow-x: auto;
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+}
+
+/* --------------------------------------------------------------------------- */
+/* Composants réutilisables                                                     */
+/* --------------------------------------------------------------------------- */
+
+/* --- Boutons --- */
+.btn {
+  display: inline-block;
+  padding: var(--space-sm) var(--space-lg);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: var(--border-width) solid var(--color-primary);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-primary);
+  transform: translateX(-100%);
+  transition: transform var(--transition-normal);
+  z-index: -1;
+}
+
+.btn:hover {
+  color: var(--color-bg);
+  box-shadow: var(--glow-primary);
+}
+
+.btn:hover::before {
+  transform: translateX(0);
+}
+
+.btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Variantes de boutons */
+.btn-secondary {
+  border-color: var(--color-secondary);
+  color: var(--color-secondary);
+}
+.btn-secondary::before { background: var(--color-secondary); }
+.btn-secondary:hover   { box-shadow: var(--glow-secondary); }
+
+.btn-danger {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+.btn-danger::before { background: var(--color-danger); }
+.btn-danger:hover   { box-shadow: var(--glow-danger); }
+
+.btn-sm {
+  padding: var(--space-xs) var(--space-md);
+  font-size: var(--font-size-xs);
+}
+
+/* --- Inputs --- */
+.input {
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-base);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px #00ff4120;
+}
+
+.input::placeholder {
+  color: var(--color-text-dim);
+}
+
+/* --- Panneaux / Cards --- */
+.panel {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+}
+
+.panel-header {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-md);
+  margin-bottom: var(--space-lg);
+  color: var(--color-text-header);
+  font-family: var(--font-display);
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* --- Badges de statut --- */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.badge-locked   { background: #1a1a1a; color: var(--color-muted);   border: 1px solid #2a2a2a; }
+.badge-playing  { background: #001a10; color: var(--color-primary);  border: 1px solid var(--color-primary-dim); }
+.badge-done     { background: #001a10; color: var(--color-success);  border: 1px solid var(--color-success); }
+.badge-warning  { background: #1a0f00; color: var(--color-warning);  border: 1px solid var(--color-warning); }
+
+/* --------------------------------------------------------------------------- */
+/* Animations globales                                                          */
+/* --------------------------------------------------------------------------- */
+
+/* Clignotement curseur terminal */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* Pulsation lueur */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: var(--glow-primary); }
+  50%       { box-shadow: 0 0 20px #00ff4180, 0 0 50px #00ff4140; }
+}
+
+/* Défilement texte terminal (typewriter) */
+@keyframes typewriter {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+/* Apparition rapide */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Scan ligne (effet CRT) */
+@keyframes scan {
+  0%   { background-position: 0 0; }
+  100% { background-position: 0 100%; }
+}
+
+/* Tremblement (erreur) */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-6px); }
+  40%       { transform: translateX(6px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
+}
+
+/* Classes utilitaires d'animation */
+.anim-fade-in  { animation: fade-in 0.4s ease forwards; }
+.anim-blink    { animation: blink 1s step-end infinite; }
+.anim-shake    { animation: shake 0.4s ease; }
+.anim-glow     { animation: pulse-glow 2s ease-in-out infinite; }
+
+/* --------------------------------------------------------------------------- */
+/* Effet CRT / Scanlines (optionnel, appliqué via classe sur body)             */
+/* --------------------------------------------------------------------------- */
+.crt-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+}
+
+/* --------------------------------------------------------------------------- */
+/* Utilitaires                                                                  */
+/* --------------------------------------------------------------------------- */
+.text-primary   { color: var(--color-primary); }
+.text-secondary { color: var(--color-secondary); }
+.text-accent    { color: var(--color-accent); }
+.text-danger    { color: var(--color-danger); }
+.text-warning   { color: var(--color-warning); }
+.text-dim       { color: var(--color-text-dim); }
+.text-muted     { color: var(--color-muted); }
+.text-center    { text-align: center; }
+.text-uppercase { text-transform: uppercase; letter-spacing: 0.08em; }
+.text-sm        { font-size: var(--font-size-sm); }
+
+.hidden  { display: none !important; }
+.visible { display: block !important; }
+
+.glow-primary   { text-shadow: var(--glow-text); }
+.glow-secondary { text-shadow: 0 0 6px #00d4ff60; }
+
+.mt-sm  { margin-top: var(--space-sm); }
+.mt-md  { margin-top: var(--space-md); }
+.mt-lg  { margin-top: var(--space-lg); }
+.mb-sm  { margin-bottom: var(--space-sm); }
+.mb-md  { margin-bottom: var(--space-md); }
+.mb-lg  { margin-bottom: var(--space-lg); }

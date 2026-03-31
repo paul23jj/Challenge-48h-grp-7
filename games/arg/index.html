@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIGNAL FANTÔME // CHALLENGE-48H</title>
+
+  <!-- Thème global partagé -->
+  <link rel="stylesheet" href="../../shared/theme.css" />
+  <!-- Styles spécifiques au jeu ARG -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Overlay scanlines CRT (ambiance) -->
+  <div class="crt-overlay" aria-hidden="true"></div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       HUD SUPÉRIEUR — timer, étape, indices
+       ══════════════════════════════════════════════════════════════════════ -->
+  <header class="game-hud">
+    <a href="../../index.html" class="hud-back">
+      <span class="text-primary">◀</span> HUB
+    </a>
+
+    <div class="hud-center">
+      <span class="hud-title">// CHALLENGE-48H</span>
+    </div>
+
+    <div class="hud-right">
+      <div class="hud-stat">
+        <span class="hud-stat__label">TEMPS</span>
+        <span class="hud-stat__value text-primary" id="hud-timer">00:00</span>
+      </div>
+      <div class="hud-stat">
+        <span class="hud-stat__label">ÉNIGME</span>
+        <span class="hud-stat__value text-secondary" id="hud-step">—</span>
+      </div>
+      <div class="hud-stat">
+        <span class="hud-stat__label">INDICES</span>
+        <span class="hud-stat__value text-warning" id="hud-hints">0</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       CONTENEUR PRINCIPAL
+       ══════════════════════════════════════════════════════════════════════ -->
+  <main class="game-main">
+
+    <!-- ────────────────────────────────────────────────────────────────────
+         SECTION 0 — INTRO NARRATIVE
+         ──────────────────────────────────────────────────────────────────── -->
+    <section id="section-intro" class="game-section hidden">
+
+      <div class="terminal-window">
+        <div class="terminal-titlebar">
+          <span class="tdot tdot-r"></span>
+          <span class="tdot tdot-y"></span>
+          <span class="tdot tdot-g"></span>
+          <span class="terminal-title">CONNEXION_ENTRANTE.log</span>
+        </div>
+        <div class="terminal-body">
+          <p><span class="text-dim">// 2026-03-30 03:47:12 UTC — SIGNAL DÉTECTÉ</span></p>
+          <br/>
+          <p><span class="text-primary">></span> Source : inconnue</p>
+          <p><span class="text-primary">></span> Chiffrement : actif</p>
+          <p><span class="text-primary">></span> Contenu : <span class="text-warning">CLASSIFIÉ</span></p>
+          <br/>
+          <p class="text-dim">Un inconnu t'a contacté via un canal sécurisé.<br/>
+          Il dit s'appeler "S." — et il prétend que tout est caché à la vue de tous.<br/>
+          Pour découvrir la vérité, tu dois suivre sa piste à travers trois énigmes.</p>
+          <br/>
+          <p><span class="text-danger">⚠</span> <span class="text-dim">Avertissement : une fois la session ouverte, il n'y a pas de retour.</span></p>
+          <br/>
+          <p><span class="text-primary">></span> En attente d'autorisation de l'agent<span class="cursor-blink text-primary">█</span></p>
+        </div>
+      </div>
+
+      <div class="section-actions">
+        <button class="btn btn-primary btn-lg" id="intro-start-btn">
+          ▶ ACCEPTER LA MISSION
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ────────────────────────────────────────────────────────────────────
+         SECTION 1 — ÉNIGME ROT13 : FAUX CLIENT EMAIL
+         ──────────────────────────────────────────────────────────────────── -->
+    <section id="section-puzzle1" class="game-section hidden">
+
+      <h2 class="section-title">
+        <span class="text-primary">[ ÉNIGME 1/3 ]</span> — Décryptage du message
+      </h2>
+
+      <!-- Simulateur de client email -->
+      <div class="email-client">
+
+        <!-- Sidebar boîte mail -->
+        <aside class="email-sidebar">
+          <div class="email-folder email-folder--active">
+            <span class="text-primary">▶</span> BOÎTE DE RÉCEPTION (1)
+          </div>
+          <div class="email-folder text-dim">— ENVOYÉS (0)</div>
+          <div class="email-folder text-dim">— CORBEILLE (0)</div>
+        </aside>
+
+        <!-- Panneau principal mail -->
+        <div class="email-main">
+          <!-- Liste des emails -->
+          <div class="email-list">
+            <div class="email-item email-item--unread">
+              <div class="email-item__from text-danger">???@signal-null.onion</div>
+              <div class="email-item__subject">Fw: PROJET_X — données annexe 7</div>
+              <div class="email-item__date text-dim">Aujourd'hui, 03:47</div>
+            </div>
+          </div>
+
+          <!-- Corps de l'email -->
+          <div class="email-view">
+            <div class="email-meta">
+              <div class="email-meta__row">
+                <span class="text-dim">DE :</span>
+                <span class="text-danger">???@signal-null.onion</span>
+              </div>
+              <div class="email-meta__row">
+                <span class="text-dim">À :</span>
+                <span class="text-dim">agent_inconnu@CHALLENGE-48H.net</span>
+              </div>
+              <div class="email-meta__row">
+                <span class="text-dim">OBJET :</span>
+                <span>Fw: PROJET_X — données annexe 7</span>
+              </div>
+              <div class="email-meta__row">
+                <span class="text-dim">DATE :</span>
+                <span class="text-dim">2026-03-30 03:47:12 UTC</span>
+              </div>
+            </div>
+
+            <!-- Message encodé ROT13 — injecté par game.js via p1-encoded-msg -->
+            <div class="email-body">
+              <p class="text-dim">— MESSAGE CHIFFRÉ — NIVEAU 1 —</p>
+              <div class="encoded-block">
+                <p class="text-dim">Nthrag,</p>
+                <p>
+                  Yr zbg qr cnffr rfg :
+                  <strong class="text-primary" id="p1-encoded-msg">YRF ZHEF BAG QRF LRHK</strong>
+                </p>
+                <p class="text-dim mt-1">
+                  Geh ir yn qreavar crefbaar ra dh'vyf pbashvrag.<br/>
+                  He tneqr wr ar cervf cnf qr evfdhr.<br/>
+                  Qétehvf pr zrffntr ncèf yrpgher.
+                </p>
+                <p class="text-dim mt-1">— F.</p>
+              </div>
+              <p class="text-dim mt-1">— FIN DU MESSAGE —</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Zone de réponse -->
+      <div class="answer-zone">
+        <div class="instructions">
+          <p><span class="text-primary">▶</span> Ce message est encodé en <strong class="text-warning">ROT13</strong>.</p>
+          <p>Chaque lettre de l'alphabet est décalée de 13 positions. Décode le message et entre la <strong class="text-primary">phrase secrète</strong>.</p>
+        </div>
+
+        <div class="answer-form">
+          <label class="answer-label">
+            <span class="text-primary">$</span> ENTRER LA PHRASE SECRÈTE :
+          </label>
+          <div class="answer-row">
+            <input
+              type="text"
+              id="p1-input"
+              class="answer-input"
+              placeholder="Entrer la réponse..."
+              maxlength="40"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <button class="btn btn-primary" id="p1-submit">VALIDER</button>
+          </div>
+          <div class="feedback hidden" id="p1-feedback"></div>
+        </div>
+
+        <div class="hint-zone">
+          <button class="btn btn-hint" id="p1-hint-btn" disabled>
+            <span class="text-warning">?</span> INDICE —
+            <span id="p1-hint-countdown">Indice disponible dans 60s</span>
+          </button>
+          <div class="hint-text hidden" id="p1-hint-text"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ────────────────────────────────────────────────────────────────────
+         SECTION 2 — TRANSITION NARRATIVE 1
+         ──────────────────────────────────────────────────────────────────── -->
+    <section id="section-transition1" class="game-section hidden">
+
+      <div class="terminal-window">
+        <div class="terminal-titlebar">
+          <span class="tdot tdot-r"></span>
+          <span class="tdot tdot-y"></span>
+          <span class="tdot tdot-g"></span>
+          <span class="terminal-title">TRACE_ROUTE.sh</span>
+        </div>
+        <div class="terminal-body">
+          <!-- Typewriter injecté par game.js -->
+          <div id="trans1-text" class="typewriter-output"></div>
+        </div>
+      </div>
+
+      <div class="section-actions">
+        <button class="btn btn-primary btn-lg" id="trans1-next-btn">
+          SUIVRE LA PISTE ▶
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ────────────────────────────────────────────────────────────────────
+         SECTION 3 — ÉNIGME GPS : CODE MORSE
+         ──────────────────────────────────────────────────────────────────── -->
+    <section id="section-puzzle2" class="game-section hidden">
+
+      <h2 class="section-title">
+        <span class="text-primary">[ ÉNIGME 2/3 ]</span> — Localisation du signal
+      </h2>
+
+      <!-- Conteneur principal puzzle 2 -->
+      <div class="puzzle2-grid">
+
+        <!-- Panneau signal morse intercepté -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="text-secondary">⚡ SIGNAL INTERCEPTÉ — 437.525 MHz</span>
+          </div>
+          <div class="panel-body">
+            <p class="text-dim mb-1">Signal morse reçu :</p>
+
+            <div class="morse-display">
+
+              <div class="morse-decode-row">
+                <div class="morse-line">
+                  <span class="morse-label text-dim">LAT :</span>
+                  <span class="morse-code text-primary" id="p2-lat-morse"></span>
+                </div>
+                <div class="morse-decode-result hidden" id="p2-lat-result">
+                  <span class="text-warning">↳</span>
+                  <span class="text-secondary" id="p2-lat-value"></span>
+                </div>
+                <button class="btn btn-secondary btn-sm" id="p2-decode-lat-btn">🔍 DÉCODER LAT</button>
+              </div>
+
+              <div class="morse-decode-row">
+                <div class="morse-line">
+                  <span class="morse-label text-dim">LON :</span>
+                  <span class="morse-code text-primary" id="p2-lon-morse"></span>
+                </div>
+                <div class="morse-decode-result hidden" id="p2-lon-result">
+                  <span class="text-warning">↳</span>
+                  <span class="text-secondary" id="p2-lon-value"></span>
+                </div>
+                <button class="btn btn-secondary btn-sm" id="p2-decode-lon-btn">🔍 DÉCODER LON</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Index des archives — le joueur fait le lien coordonnées → nom de code -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="text-dim">🗂 INDEX DES ARCHIVES — ACCÈS RESTREINT</span>
+          </div>
+          <div class="panel-body panel-body--compact">
+            <table class="archive-index">
+              <thead>
+                <tr>
+                  <th class="text-dim">COORDONNÉES</th>
+                  <th class="text-dim">NOM D'ARCHIVE</th>
+                  <th class="text-dim">ÉTAT</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="text-dim">51°N &middot; 0°E</td>
+                  <td class="text-dim">FANTÔME ALPHA</td>
+                  <td class="text-dim">[???]</td>   
+                </tr>
+                <tr id="p2-archive-target">
+                  <td class="text-dim">48°N &middot; 2°E</td>
+                  <td class="text-dim">FANTÔME ZEPHYR</td>
+                  <td class="text-dim">[???]</td>
+                </tr>
+                <tr>
+                  <td class="text-dim">52°N &middot; 13°E</td>
+                  <td class="text-dim">FANTÔME NERO</td>
+                  <td class="text-dim">[???]</td>
+                </tr>
+                <tr>
+                  <td class="text-dim">40°N &middot; 3°O</td>
+                  <td class="text-dim">FANTÔME SIRIUS</td>
+                  <td class="text-dim">[???]</td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="text-dim mt-1" style="font-size:var(--font-size-xs)">
+              Croiser les coordonnées décodées avec cet index pour identifier l'archive active.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Zone de réponse -->
+      <div class="answer-zone">
+        <div class="instructions">
+          <p><span class="text-primary">▶</span> Décode le signal morse pour obtenir des coordonnées GPS.</p>
+          <p>Utilise les coordonnées pour identifier l'archive dans l'index. Entre le <strong class="text-primary">NOM DE CODE</strong> de l'archive active.</p>
+        </div>
+
+        <div class="answer-form">
+          <label class="answer-label">
+            <span class="text-primary">$</span> NOM DE CODE DE L'INSTALLATION :
+          </label>
+          <div class="answer-row">
+            <input
+              type="text"
+              id="p2-input"
+              class="answer-input"
+              placeholder="Entrer le nom de code..."
+              maxlength="30"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <button class="btn btn-primary" id="p2-submit">VALIDER</button>
+          </div>
+          <div class="feedback hidden" id="p2-feedback"></div>
+        </div>
+
+        <div class="hint-zone">
+          <button class="btn btn-hint" id="p2-hint-btn" disabled>
+            <span class="text-warning">?</span> INDICE —
+            <span id="p2-hint-countdown">Indice disponible dans 90s</span>
+          </button>
+          <div class="hint-text hidden" id="p2-hint-text"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ────────────────────────────────────────────────────────────────────
+         SECTION 4 — TRANSITION NARRATIVE 2
+         ──────────────────────────────────────────────────────────────────── -->
+    <section id="section-transition2" class="game-section hidden">
+
+      <div class="terminal-window">
+        <div class="terminal-titlebar">
+          <span class="tdot tdot-r"></span>
+          <span class="tdot tdot-y"></span>
+          <span class="tdot tdot-g"></span>
+          <span class="terminal-title">INFILTRATION_SYSTEME.log</span>
+        </div>
+        <div class="terminal-body">
+          <!-- Typewriter injecté par game.js -->
+          <div id="trans2-text" class="typewriter-output"></div>
+        </div>
+      </div>
+
+      <div class="section-actions">
+        <button class="btn btn-primary btn-lg" id="trans2-next-btn">
+          ACCÉDER AUX DONNÉES ▶
+        </button>
+      </div>
+
+    </section>
+
+    <!-- ────────────────────────────────────────────────────────────────────
+         SECTION 5 — ÉNIGME 3 — TRANSMISSION CHIFFRÉE
+         ──────────────────────────────────────────────────────────────────── -->
+    <section id="section-puzzle3" class="game-section hidden">
+
+      <h2 class="section-title">
+        <span class="text-primary">[ ÉNIGME 3/3 ]</span> — Transmission Chiffrée
+      </h2>
+
+      <div class="puzzle3-vigenere-grid">
+
+        <!-- Transmission interceptée (ciphertext) -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="text-secondary">📡 TRANSMISSION_INTERCEPTEE.enc</span>
+            <span class="text-dim">[CHIFFRAGE INCONNU]</span>
+          </div>
+          <div class="panel-body">
+            <div class="vigenere-ciphertext" id="p3-ciphertext">
+              <!-- Rempli par game.js -->
+            </div>
+            <p class="text-dim text-sm mt-1">Protocole de chiffrement non identifié — clé introuvable.</p>
+          </div>
+        </div>
+
+        <!-- Rapport d'incident (clé cachée dans les mots ALL CAPS) -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="text-dim">📄 DOCUMENT_RECUPÉRÉ.txt</span>
+            <span class="text-dim text-sm">[ORIGINE INCONNUE]</span>
+          </div>
+          <div class="panel-body">
+            <div class="intel-report" id="p3-key-clue">
+              <!-- Rempli par game.js -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Outil de déchiffrement (ne pas nommer le chiffre) -->
+      <div class="panel vigenere-decoder-panel">
+        <div class="panel-header">
+          <span class="text-secondary">⚙ OUTIL DE DÉCHIFFREMENT</span>
+          <span class="text-dim text-sm">Protocole inconnu — tentative par clé</span>
+        </div>
+        <div class="panel-body">
+          <div class="decoder-input-row">
+            <label class="answer-label">
+              <span class="text-primary">$</span> CLÉ DE DÉCHIFFREMENT :
+            </label>
+            <div class="answer-row">
+              <input
+                type="text"
+                id="p3-key-input"
+                class="answer-input"
+                placeholder="ex: ALPHA"
+                maxlength="20"
+                autocomplete="off"
+                spellcheck="false"
+                style="text-transform:uppercase; max-width:200px"
+              />
+              <button class="btn btn-secondary" id="p3-decode-btn">DÉCHIFFRER</button>
+            </div>
+            <div class="feedback hidden" id="p3-decode-feedback"></div>
+          </div>
+
+          <div class="decoded-output hidden" id="p3-decoded-area">
+            <p class="text-dim text-sm">── CONTENU DÉCHIFFRÉ ──</p>
+            <div class="decoded-text" id="p3-decoded-text"></div>
+            <p class="text-warning text-sm mt-1">Analyse le message déchiffré pour identifier le <strong>nom de code agent</strong>.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Zone de réponse -->
+      <div class="answer-zone">
+        <div class="instructions">
+          <p>
+            <span class="text-primary">▶</span>
+            Déchiffre la transmission et identifie le
+            <strong class="text-primary">NOM DE CODE AGENT</strong>.
+          </p>
+        </div>
+
+        <div class="answer-form">
+          <label class="answer-label">
+            <span class="text-primary">$</span> NOM DE CODE AGENT :
+          </label>
+          <div class="answer-row">
+            <input
+              type="text"
+              id="p3-input"
+              class="answer-input"
+              placeholder="Entrer le nom de code..."
+              maxlength="20"
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <button class="btn btn-primary" id="p3-submit">VALIDER</button>
+          </div>
+          <div class="feedback hidden" id="p3-feedback"></div>
+        </div>
+
+        <div class="hint-zone">
+          <button class="btn btn-hint" id="p3-hint-btn" disabled>
+            <span class="text-warning">?</span> INDICE —
+            <span id="p3-hint-countdown">Indice disponible dans 90s</span>
+          </button>
+          <div class="hint-text hidden" id="p3-hint-text"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ────────────────────────────────────────────────────────────────────
+         SECTION 6 — VICTOIRE
+         ──────────────────────────────────────────────────────────────────── -->
+    <section id="section-victory" class="game-section hidden">
+
+      <!-- Titre avec effet glitch -->
+      <h1 class="victory-title glitch-text" data-text="MISSION ACCOMPLIE">
+        MISSION ACCOMPLIE
+      </h1>
+
+      <!-- Révélation narrative (typewriter via game.js) -->
+      <div class="terminal-window victory-terminal">
+        <div class="terminal-titlebar">
+          <span class="tdot tdot-r"></span>
+          <span class="tdot tdot-y"></span>
+          <span class="tdot tdot-g"></span>
+          <span class="terminal-title">REVELATION_FINALE.log</span>
+        </div>
+        <div class="terminal-body">
+          <div id="victory-narrative" class="typewriter-output"></div>
+        </div>
+      </div>
+
+      <!-- Panneau de score final -->
+      <div class="score-panel">
+        <div class="score-panel__title text-secondary">── RAPPORT DE MISSION ──</div>
+        <div class="score-grid">
+          <div class="score-item">
+            <span class="score-item__label text-dim">TEMPS</span>
+            <span class="score-item__value text-primary" id="victory-time">--:--</span>
+          </div>
+          <div class="score-item">
+            <span class="score-item__label text-dim">INDICES UTILISÉS</span>
+            <span class="score-item__value text-warning" id="victory-hints">0</span>
+          </div>
+          <div class="score-item">
+            <span class="score-item__label text-dim">SCORE FINAL</span>
+            <span class="score-item__value text-success score-final" id="victory-score">0000</span>
+          </div>
+          <div class="score-item">
+            <span class="score-item__label text-dim">PERFORMANCE</span>
+            <span class="score-item__value text-primary" id="victory-rating">--</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions de fin -->
+      <div class="victory-actions">
+        <button class="btn btn-primary btn-lg" id="victory-back-btn">
+          ◀ RETOUR AU HUB
+        </button>
+        <a href="" class="btn btn-secondary btn-lg" onclick="location.reload(); return false;">
+          ↺ REJOUER
+        </a>
+      </div>
+      <!-- Mot-code débloqué : dernier fragment de la phrase secrète -->
+      <div class="arg-word-reveal" id="victory-word-reveal" style="margin-top:2rem;text-align:center;">
+        <p style="font-size:.7rem;letter-spacing:.2em;color:var(--color-text-dim,#6b6b6b);margin-bottom:.5rem;">// FRAGMENT DE PHRASE DÉBLOQUÉ //</p>
+        <div id="victory-word" style="
+          display:inline-block;
+          font-size:2.2rem;font-weight:bold;letter-spacing:.15em;
+          color:#00ff88;text-shadow:0 0 20px rgba(0,255,136,.5);
+          border:1px solid #00ff88;
+          padding:.4rem 1.6rem;
+          background:rgba(0,255,136,.05);
+          box-shadow:0 0 30px rgba(0,255,136,.15);
+          animation:arg-word-pulse 2s infinite alternate;
+        ">_48h</div>
+        <style>
+          @keyframes arg-word-pulse {
+            from { text-shadow:0 0 10px rgba(0,255,136,.3); }
+            to   { text-shadow:0 0 30px rgba(0,255,136,.8), 0 0 60px rgba(0,255,136,.3); }
+          }
+        </style>
+      </div>
+    </section>
+
+  </main><!-- /game-main -->
+
+  <!-- Utilitaires partagés -->
+  <script src="../../shared/utils.js"></script>
+  <!-- Compte à rebours global -->
+  <script src="../../shared/global-timer.js"></script>
+  <!-- Logique du jeu -->
+  <script src="game.js"></script>
+
+</body>
+</html>

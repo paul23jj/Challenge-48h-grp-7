@@ -1,0 +1,893 @@
+/* =============================================================================
+   style.css — Styles spécifiques au jeu ARG "Signal Fantôme"
+   Requiert : ../../shared/theme.css (variables CSS globales)
+   ============================================================================= */
+
+/* --------------------------------------------------------------------------- */
+/* RESET ET BASE                                                               */
+/* --------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-base);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* --------------------------------------------------------------------------- */
+/* UTILITAIRES JS — classes manipulées par game.js / utils.js                 */
+/* --------------------------------------------------------------------------- */
+
+/* Masquage d'éléments (ajouté/retiré par JS) */
+.hidden { display: none !important; }
+
+/* Animation d'entrée (appliquée sur la section activée) */
+.anim-fade-in {
+  animation: fadeInUp 0.4s ease both;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Animation de tremblement pour mauvaise réponse */
+.anim-shake {
+  animation: shake 0.35s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-7px); }
+  40%       { transform: translateX(7px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
+}
+
+/* --------------------------------------------------------------------------- */
+/* OVERLAY CRT — scanlines + vignette                                          */
+/* --------------------------------------------------------------------------- */
+.crt-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.07) 2px,
+      rgba(0, 0, 0, 0.07) 4px
+    );
+}
+
+/* --------------------------------------------------------------------------- */
+/* HUD SUPÉRIEUR                                                               */
+/* --------------------------------------------------------------------------- */
+.game-hud {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 1.5rem;
+  background: rgba(10, 10, 10, 0.97);
+  border-bottom: 1px solid var(--color-border);
+  backdrop-filter: blur(4px);
+  gap: 1rem;
+}
+
+/* Lien "◀ HUB" */
+.hud-back {
+  color: var(--color-text-dim);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  transition: color 0.15s;
+  flex-shrink: 0;
+}
+.hud-back:hover { color: var(--color-primary); }
+
+/* Titre centré */
+.hud-center {
+  flex: 1;
+  text-align: center;
+}
+
+.hud-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-md);
+  color: var(--color-text-bright);
+  letter-spacing: 0.15em;
+}
+
+/* Stats (timer, étape, indices) */
+.hud-right {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.hud-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+
+.hud-stat__label {
+  font-size: 0.6rem;
+  color: var(--color-text-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.hud-stat__value {
+  font-family: var(--font-display);
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.08em;
+}
+
+/* --------------------------------------------------------------------------- */
+/* CONTENEUR PRINCIPAL                                                         */
+/* --------------------------------------------------------------------------- */
+.game-main {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 5rem;
+}
+
+/* --------------------------------------------------------------------------- */
+/* SECTIONS DE JEU                                                             */
+/* --------------------------------------------------------------------------- */
+.game-section {
+  /* Les sections sont initialement masquées via .hidden,
+     et révélées par JS qui retire la classe .hidden               */
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+  color: var(--color-text-header);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+  letter-spacing: 0.04em;
+}
+
+.section-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+/* --------------------------------------------------------------------------- */
+/* BOUTONS                                                                     */
+/* --------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1.2rem;
+  border: 1px solid currentColor;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  border-radius: 3px;
+  text-decoration: none;
+  transition: background 0.2s, box-shadow 0.2s;
+  outline: none;
+  background: transparent;
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Vert — actions principais */
+.btn-primary {
+  border-color: var(--color-primary);
+  background: rgba(0, 255, 65, 0.08);
+  color: var(--color-primary);
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-primary);
+  color: var(--color-bg);
+  box-shadow: 0 0 12px var(--color-primary);
+}
+
+/* Cyan — actions secondaires */
+.btn-secondary {
+  border-color: var(--color-secondary);
+  background: rgba(0, 212, 255, 0.06);
+  color: var(--color-secondary);
+}
+.btn-secondary:hover:not(:disabled) {
+  background: var(--color-secondary);
+  color: var(--color-bg);
+  box-shadow: 0 0 12px var(--color-secondary);
+}
+
+/* Jaune — indices */
+.btn-hint {
+  border-color: var(--color-warning);
+  background: rgba(255, 204, 0, 0.06);
+  color: var(--color-warning);
+}
+.btn-hint:hover:not(:disabled) {
+  background: var(--color-warning);
+  color: var(--color-bg);
+  box-shadow: 0 0 12px var(--color-warning);
+}
+
+/* Tailles */
+.btn-lg { padding: 0.75rem 2rem; font-size: var(--font-size-base); letter-spacing: 0.12em; }
+.btn-sm { padding: 0.3rem 0.7rem; font-size: var(--font-size-xs); }
+
+/* --------------------------------------------------------------------------- */
+/* FENÊTRE TERMINAL                                                            */
+/* --------------------------------------------------------------------------- */
+.terminal-window {
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--color-bg-card);
+  margin-bottom: 1.5rem;
+}
+
+.terminal-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.8rem;
+  background: var(--color-bg-elevated);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Points colorés de la barre de titre */
+.tdot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.tdot-r { background: #ff5f57; }
+.tdot-y { background: #febc2e; }
+.tdot-g { background: #28c840; }
+
+.terminal-title {
+  margin-left: 0.4rem;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-dim);
+  letter-spacing: 0.08em;
+}
+
+.terminal-body {
+  padding: 1.2rem 1.4rem;
+  min-height: 80px;
+  line-height: 1.8;
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+}
+
+/* Sortie typewriter */
+.typewriter-output {
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.8;
+}
+
+/* Curseur clignotant */
+.cursor-blink {
+  animation: blink 1s step-end infinite;
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* --------------------------------------------------------------------------- */
+/* CLIENT EMAIL (Énigme 1)                                                     */
+/* --------------------------------------------------------------------------- */
+.email-client {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--color-bg-card);
+  min-height: 300px;
+  margin-bottom: 1.5rem;
+}
+
+.email-sidebar {
+  border-right: 1px solid var(--color-border);
+  background: var(--color-bg-elevated);
+  padding: 0.5rem 0;
+}
+
+.email-folder {
+  padding: 0.5rem 0.9rem;
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.04em;
+  cursor: default;
+}
+
+.email-folder--active {
+  color: var(--color-primary);
+  background: rgba(0, 255, 65, 0.08);
+  border-left: 3px solid var(--color-primary);
+}
+
+.email-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.email-list {
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg-secondary);
+}
+
+.email-item {
+  padding: 0.55rem 1rem;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+}
+
+.email-item--unread {
+  border-left-color: var(--color-primary);
+}
+
+.email-item__from  { font-size: var(--font-size-xs); margin-bottom: 0.15rem; }
+.email-item__subject { font-size: var(--font-size-sm); color: var(--color-text); }
+.email-item__date  { font-size: var(--font-size-xs); margin-top: 0.1rem; }
+
+.email-view { padding: 1.1rem; flex: 1; }
+
+.email-meta {
+  padding-bottom: 0.8rem;
+  margin-bottom: 0.8rem;
+  border-bottom: 1px dashed var(--color-border);
+}
+
+.email-meta__row {
+  display: flex;
+  gap: 0.6rem;
+  font-size: var(--font-size-xs);
+  margin-bottom: 0.2rem;
+}
+
+.email-meta__row span:first-child {
+  min-width: 55px;
+  flex-shrink: 0;
+}
+
+.email-body {
+  font-size: var(--font-size-sm);
+  line-height: 1.8;
+}
+
+/* Bloc de texte encodé */
+.encoded-block {
+  background: rgba(0, 255, 65, 0.04);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-primary);
+  padding: 0.7rem 1rem;
+  margin: 0.5rem 0;
+  line-height: 2;
+}
+
+/* --------------------------------------------------------------------------- */
+/* ZONE DE RÉPONSE (communes aux 3 énigmes)                                   */
+/* --------------------------------------------------------------------------- */
+.answer-zone {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 1.4rem;
+  margin-top: 1rem;
+}
+
+.instructions {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-dim);
+  line-height: 1.8;
+  margin-bottom: 1.2rem;
+}
+
+.instructions p + p { margin-top: 0.3rem; }
+
+.answer-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.answer-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-dim);
+  letter-spacing: 0.04em;
+}
+
+.answer-row {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.answer-input {
+  flex: 1;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-md);
+  padding: 0.5rem 0.8rem;
+  border-radius: 3px;
+  outline: none;
+  letter-spacing: 0.12em;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.answer-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 8px rgba(0, 255, 65, 0.2);
+}
+
+/* Feedback texte (géré par ARG.showFeedback dans utils.js) */
+.feedback {
+  font-size: var(--font-size-sm);
+  min-height: 1.4em;
+  letter-spacing: 0.04em;
+  transition: opacity 0.4s;
+}
+
+/* --------------------------------------------------------------------------- */
+/* ZONE D'INDICE                                                               */
+/* --------------------------------------------------------------------------- */
+.hint-zone {
+  padding-top: 0.9rem;
+  border-top: 1px dashed var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  align-items: flex-start;
+}
+
+.hint-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-warning);
+  background: rgba(255, 204, 0, 0.07);
+  border: 1px solid rgba(255, 204, 0, 0.25);
+  border-left: 3px solid var(--color-warning);
+  padding: 0.6rem 1rem;
+  width: 100%;
+  line-height: 1.7;
+}
+
+/* --------------------------------------------------------------------------- */
+/* PANNEAU GÉNÉRIQUE (panel-header + panel-body)                               */
+/* --------------------------------------------------------------------------- */
+.panel {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.45rem 0.9rem;
+  background: var(--color-bg-elevated);
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.07em;
+  gap: 0.5rem;
+}
+
+.panel-body {
+  padding: 0.9rem 1rem;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-dim);
+  line-height: 1.7;
+}
+
+.panel-body--compact {
+  padding: 0.6rem 0.8rem;
+}
+
+/* --------------------------------------------------------------------------- */
+/* ÉNIGME 2 — GPS / MORSE                                                      */
+/* --------------------------------------------------------------------------- */
+.puzzle2-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Affichage des codes morse */
+.morse-display {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin: 0.6rem 0;
+}
+
+.morse-line {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.morse-label {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.morse-code {
+  font-size: var(--font-size-lg);
+  letter-spacing: 0.35em;
+  word-break: break-all;
+  line-height: 1.5;
+}
+
+/* Index des archives — tableau puzzle 2 */
+.archive-index {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.archive-index th {
+  text-align: left;
+  padding: 0.3rem 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+  letter-spacing: 0.06em;
+  font-size: 0.65rem;
+}
+
+.archive-index td {
+  padding: 0.35rem 0.5rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Chaque coordonnée = son wrapper avec le morse, résultat et bouton */
+.morse-decode-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.morse-decode-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* Résultat affiché après décodage */
+.morse-decode-result {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  padding: 0.3rem 0.5rem;
+  background: rgba(0, 212, 255, 0.06);
+  border-left: 2px solid var(--color-secondary);
+  animation: fade-in 0.4s ease;
+}
+
+.archive-row--active td {
+  background: rgba(0, 212, 255, 0.11);
+  border-left: 2px solid var(--color-primary);
+  animation: archive-activate 0.6s ease;
+}
+
+@keyframes archive-activate {
+  0%   { background: rgba(0, 212, 255, 0.35); }
+  100% { background: rgba(0, 212, 255, 0.11); }
+}
+
+/* Zone de décodage assisté */
+.decoded-output {
+  margin-top: 0.6rem;
+  padding: 0.6rem 0.8rem;
+  background: rgba(0, 212, 255, 0.06);
+  border: 1px solid rgba(0, 212, 255, 0.25);
+  border-left: 3px solid var(--color-secondary);
+  font-size: var(--font-size-sm);
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+/* --------------------------------------------------------------------------- */
+/* ÉNIGME 3 — VIGENÈRE                                                         */
+/* --------------------------------------------------------------------------- */
+.puzzle3-vigenere-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  align-items: start;
+}
+
+/* Transmission chiffrée */
+.vigenere-ciphertext {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  letter-spacing: 0.18em;
+  color: var(--color-warning);
+  line-height: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.cipher-line {
+  display: block;
+  word-break: break-all;
+}
+
+/* Rapport d'incident classifié */
+.intel-report {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  line-height: 1.75;
+  color: var(--color-text-dim);
+  padding: 0.5rem 0;
+}
+
+.report-line {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.report-line--header {
+  color: var(--color-warning);
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.report-line--meta {
+  color: var(--color-text-dim);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.report-line--body {
+  color: var(--color-text);
+  font-size: 0.82rem;
+}
+
+.report-line--footer {
+  color: var(--color-text-dim);
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.report-spacer {
+  height: 0.5rem;
+}
+
+/* Mots-clés du rapport (couleur warning discrète, pas de glow) */
+.report-keyword {
+  color: var(--color-warning);
+  font-weight: bold;
+}
+
+/* Décodeur Vigenère */
+.vigenere-decoder-panel {
+  margin-bottom: 1rem;
+}
+
+.decoder-input-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Zone de sortie décodée */
+.decoded-output {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: rgba(0,0,0,0.4);
+  animation: fade-in 0.4s ease;
+}
+
+.decoded-text {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  color: var(--color-text);
+  line-height: 1.8;
+  word-break: break-all;
+}
+
+/* --------------------------------------------------------------------------- */
+/* SECTION VICTOIRE                                                            */
+/* --------------------------------------------------------------------------- */
+.victory-title {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  color: var(--color-primary);
+  text-align: center;
+  margin-bottom: 2rem;
+  letter-spacing: 0.2em;
+  position: relative;
+}
+
+/* Effet glitch */
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  overflow: hidden;
+}
+
+.glitch-text::before {
+  color: var(--color-danger);
+  clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+  animation: glitch-top 3s infinite steps(1);
+}
+
+.glitch-text::after {
+  color: var(--color-secondary);
+  clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+  animation: glitch-bot 3.5s infinite steps(1);
+}
+
+@keyframes glitch-top {
+  0%,  93% { transform: none; }
+  94%       { transform: translate(-3px,  1px); }
+  96%       { transform: translate( 3px, -1px); }
+  100%      { transform: none; }
+}
+
+@keyframes glitch-bot {
+  0%,  91% { transform: none; }
+  92%       { transform: translate( 2px,  1px); }
+  94%       { transform: translate(-2px, -1px); }
+  100%      { transform: none; }
+}
+
+.victory-terminal { margin-bottom: 2rem; }
+
+/* Panneau de score */
+.score-panel {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 1.4rem;
+  margin-bottom: 2rem;
+}
+
+.score-panel__title {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: var(--font-size-sm);
+  letter-spacing: 0.15em;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.score-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.score-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.8rem;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+}
+
+.score-item__label {
+  font-size: var(--font-size-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.score-item__value {
+  font-family: var(--font-display);
+  font-size: var(--font-size-xl);
+}
+
+.score-final { font-size: 2rem; }
+
+/* Boutons de fin */
+.victory-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+/* --------------------------------------------------------------------------- */
+/* UTILITAIRES GÉNÉRAUX                                                        */
+/* --------------------------------------------------------------------------- */
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem;   }
+.mb-1 { margin-bottom: 0.5rem; }
+
+.text-primary   { color: var(--color-primary);   }
+.text-secondary { color: var(--color-secondary); }
+.text-warning   { color: var(--color-warning);   }
+.text-danger    { color: var(--color-danger);    }
+.text-success   { color: var(--color-success);   }
+.text-dim       { color: var(--color-text-dim);  }
+
+/* --------------------------------------------------------------------------- */
+/* RESPONSIVE                                                                  */
+/* --------------------------------------------------------------------------- */
+@media (max-width: 720px) {
+  .game-hud {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .hud-right {
+    gap: 0.8rem;
+    flex: 1;
+    justify-content: flex-end;
+  }
+
+  .email-client {
+    grid-template-columns: 1fr;
+  }
+
+  .email-sidebar {
+    display: flex;
+    flex-direction: row;
+    gap: 0.4rem;
+    padding: 0.4rem;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+    overflow-x: auto;
+  }
+
+  .puzzle2-grid,
+  .puzzle3-vigenere-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .score-grid {
+    grid-template-columns: 1fr;
+  }
+}
