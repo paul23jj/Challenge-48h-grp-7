@@ -1,6 +1,6 @@
 # Challenge 48h — Hub de mini-jeux
 
-Quatre mini-jeux à compléter dans l'ordre. Chaque jeu débloque le suivant et révèle un fragment de la phrase secrète.
+Quatre mini-jeux à compléter dans l'ordre. Chaque jeu débloque le suivant et révèle un fragment de la phrase secrète. Il faut lancer un go live server sur le index.html pour l'accès aux mini-jeux
 
 ---
 
