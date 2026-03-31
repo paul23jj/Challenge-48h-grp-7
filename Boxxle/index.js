@@ -11,11 +11,41 @@ const keys = {
 import { Levels } from './level.js'; // Import the level array data from level.js
 
 const levelHints = [
-    "Pousse d'abord la caisse du bas vers la cible du fond pour ne pas bloquer le couloir.",
-    "Remplis les cibles du haut en premier en faisant le tour par le grand espace vide.",
-    "Pousse les caisses une par une vers la droite. Ne les colle pas l'une contre l'autre.",
-    "Pousse une caisse à gauche et l'autre à droite pour garder le passage central libre.",
-    "Pousse une caisse vers l'extérieur pour sortir du milieu, puis fais le tour par les couloirs."
+    {
+        hints: [
+            "Observe bien le couloir à droite, c'est là que tout se joue.",
+            "Remplis les cibles en commençant par celle du bas pour ne pas boucher l'entrée.",
+            "SOLUTION : Pousse la caisse du bas au bout du couloir de droite, puis celle du milieu, puis celle du haut."
+        ]
+    },
+    {
+        hints: [
+            "Utilise le grand espace vide pour contourner les caisses par la droite.",
+            "Remplis les cibles en haut à gauche en priorité.",
+            "SOLUTION : Fais le tour par l'extérieur pour pousser les caisses vers la gauche. Ne les colle jamais au mur central."
+        ]
+    },
+    {
+        hints: [
+            "Le passage est étroit, utilise les couloirs horizontaux pour circuler.",
+            "Il faut ramener les caisses vers le centre avant de les aligner.",
+            "SOLUTION : Pousse la caisse de gauche en haut, fais le tour par le bas pour placer celle du milieu à droite."
+        ]
+    },
+    {
+        hints: [
+            "Les cibles du haut sont dans des coins, attention à l'alignement.",
+            "Libère d'abord l'accès aux couloirs extérieurs pour pouvoir faire le tour.",
+            "SOLUTION : Pousse les caisses latérales vers le haut via les côtés, puis descends la caisse centrale vers le bas."
+        ]
+    },
+    {
+        hints: [
+            "Tu es au centre, pousse les caisses vers l'extérieur pour libérer ton passage.",
+            "Vire les caisses du haut et du bas avant de t'occuper de celle du milieu.",
+            "SOLUTION : Pousse celle du haut en haut, celle du bas en bas, puis fais le tour pour placer la dernière sur le côté."
+        ]
+    }
 ];
 
 let levelIndex = 0; // The index of the level to load
@@ -144,21 +174,42 @@ function handleKeyDown(event) { // Function to handle keydown events
     }
 }
 
+function updateHintButton() {
+    if (resetCount >= 8) {
+        hintBtn.disabled = false;
+        hintBtn.innerText = "Indice Ultime";
+    } else if (resetCount >= 6) {
+        hintBtn.disabled = false;
+        hintBtn.innerText = "Indice 2";
+    } else if (resetCount >= 3) {
+        hintBtn.disabled = false;
+        hintBtn.innerText = "Indice 1";
+    } else {
+        hintBtn.disabled = true;
+        hintBtn.innerText = "Indice";
+    }
+}
+
 document.getElementById('resetBtn').addEventListener('click', () => {
     resetCount++;
-    
-    if (resetCount >= REQUIRED_RESETS) {
-        hintBtn.disabled = false;
-    }
-
+    updateHintButton();
     loadLevel(levelIndex, true); 
 });
 
 hintBtn.addEventListener('click', () => {
-    const currentHint = levelHints[levelIndex] || "Pas d'indice pour ce niveau !";
-    showModal("Indice", currentHint);
-    resetCount = 0;
-    hintBtn.disabled = true;
+    const levelData = levelHints[levelIndex];
+    let message = "";
+
+    if (resetCount >= 8) {
+        message = levelData.hints[2];
+    } else if (resetCount >= 6) {
+        message = levelData.hints[1];
+    } else if (resetCount >= 3) {
+        message = levelData.hints[0];
+    }
+
+    showModal("CONSEIL DU SAGE", message);
+
 });
 
 function checkVictory() { // Function to check if the player has completed the level
@@ -176,7 +227,7 @@ function loadLevel(index, isReset = false) { // Function to load a level based o
     levelIndex = index;
     if (!isReset) {
         resetCount = 0;
-        hintBtn.disabled = true;
+        updateHintButton();
     }
     selectedLevel = Levels[levelIndex].map(row => [...row]);
     initialLevel = Levels[levelIndex].map(row => [...row]);
